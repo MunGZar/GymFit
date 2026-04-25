@@ -1,16 +1,26 @@
 "use client";
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import styles from '@/styles/components/LoginForm.module.css';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsLoading(true);
+    
     console.log('Login attempt:', { email, password });
-    // In a real app, this would call an API
+    
+    // Simular un pequeño retraso para el efecto de "carga"
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Redireccionar al dashboard
+    router.push('/dashboard');
   };
 
   return (
@@ -30,7 +40,7 @@ const LoginForm = () => {
             className={styles.input}
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            required
+            disabled={isLoading}
           />
         </div>
 
@@ -43,12 +53,16 @@ const LoginForm = () => {
             className={styles.input}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
+            disabled={isLoading}
           />
         </div>
 
-        <button type="submit" className={styles.submitBtn}>
-          Iniciar Sesión
+        <button 
+          type="submit" 
+          className={styles.submitBtn}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
         </button>
       </form>
 

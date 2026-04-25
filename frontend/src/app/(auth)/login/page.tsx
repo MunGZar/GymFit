@@ -12,9 +12,9 @@ export const metadata: Metadata = {
 const LoginPage = () => {
   return (
     <div className={styles.wrapper}>
-      {/* Background Image */}
+      {/* imagen de fondo */}
       <Image
-        src="/login-bg.png"
+        src="/assets/login-bg.png"
         alt="Gym Interior"
         fill
         className={styles.background}
@@ -29,7 +29,7 @@ const LoginPage = () => {
 
       <div className={styles.overlay} />
 
-      {/* Main Content */}
+      {/* Contenido principal */}
       <main className={styles.content}>
         <LoginForm />
       </main>
