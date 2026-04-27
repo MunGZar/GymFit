@@ -105,3 +105,15 @@
 .link:hover {
   text-decoration: underline;
 }
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+  .container {
+    padding: 24px;
+    gap: 20px;
+  }
+  
+  .title {
+    font-size: 2rem;
+  }
+}

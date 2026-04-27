@@ -166,3 +166,31 @@
   font-weight: 600;
   color: #ef4444;
 }
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .statsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .contentGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .statsGrid {
+    grid-template-columns: 1fr;
+  }
+  .barChart {
+    overflow-x: auto;
+    padding-bottom: 10px;
+    gap: 10px;
+    justify-content: flex-start;
+  }
+  .barGroup {
+    min-width: 35px;
+  }
+  .chartCard, .expiringCard {
+    padding: 1.2rem;
+  }
+}
