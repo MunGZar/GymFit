@@ -9,7 +9,7 @@
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api';
 
-// Tipos
+// Tipos y Interfaces
 
 export interface UsuarioInfo {
   id_usuario: number;
@@ -33,16 +33,14 @@ export interface LoginResponse {
   usuario: UsuarioInfo;
 }
 
-export interface LoginPayload   { correo: string; password: string; }
+export interface LoginPayload    { correo: string; password: string; }
 export interface RegisterPayload {
   nombre: string; identificacion: string; correo: string;
   password: string; telefono?: string; id_rol: number;
 }
 export interface ActualizarPerfilPayload { nombre?: string; telefono?: string; }
 export interface CambiarPasswordPayload  { password_actual: string; password_nueva: string; }
-
 export interface Rol { id_rol: number; nombre: string; }
-
 export interface UsuarioCompleto {
   id_usuario: number; nombre: string; identificacion: string;
   correo: string; telefono: string | null; estado: boolean; rol: Rol;
@@ -56,7 +54,7 @@ export interface UpdateUsuarioPayload {
   password?: string; telefono?: string; id_rol?: number; estado?: boolean;
 }
 
-// Helpers 
+//  Helpers
 
 function getToken(): string | null {
   if (typeof window === 'undefined') return null;
@@ -72,8 +70,30 @@ function buildHeaders(includeAuth = true): Record<string, string> {
   return headers;
 }
 
-async function handleResponse<T>(res: Response): Promise<T> {
+/**
+ * Interceptor 401 global (HU-02/03 — Seguridad)
+ *
+ * Todas las llamadas autenticadas pasan por aquí.
+ * Si el servidor devuelve 401 (token expirado o inválido):
+ *   1. Limpia el localStorage
+ *   2. Redirige al login automáticamente
+ *   3. Lanza el error para que el componente también lo sepa
+ *
+ * Las rutas públicas (login, register, roles) usan buildHeaders(false)
+ * y nunca pasan por este interceptor.
+ */
+async function handleResponse<T>(res: Response, esRutaPublica = false): Promise<T> {
   if (!res.ok) {
+    // Interceptor 401: token expirado o inválido
+    if (res.status === 401 && !esRutaPublica && typeof window !== 'undefined') {
+      localStorage.removeItem('gymfit_token');
+      localStorage.removeItem('gymfit_usuario');
+      // Solo redirige si no estamos ya en /login
+      if (!window.location.pathname.startsWith('/login')) {
+        window.location.href = '/login?sesion=expirada';
+      }
+    }
+
     let message = `Error ${res.status}`;
     try {
       const body = await res.json();
@@ -86,14 +106,15 @@ async function handleResponse<T>(res: Response): Promise<T> {
   return res.json() as Promise<T>;
 }
 
-//Auth API (HU-01, HU-02) 
+// Auth API (HU-01, HU-02)
 
 export const authApi = {
   async register(payload: RegisterPayload): Promise<LoginResponse> {
     const res = await fetch(`${BASE_URL}/auth/register`, {
       method: 'POST', headers: buildHeaders(false), body: JSON.stringify(payload),
     });
-    const data = await handleResponse<LoginResponse>(res);
+    // Ruta pública — no activa el interceptor 401
+    const data = await handleResponse<LoginResponse>(res, true);
     localStorage.setItem('gymfit_token', data.access_token);
     localStorage.setItem('gymfit_usuario', JSON.stringify(data.usuario));
     return data;
@@ -103,7 +124,8 @@ export const authApi = {
     const res = await fetch(`${BASE_URL}/auth/login`, {
       method: 'POST', headers: buildHeaders(false), body: JSON.stringify(payload),
     });
-    const data = await handleResponse<LoginResponse>(res);
+    // Ruta pública — no activa el interceptor 401
+    const data = await handleResponse<LoginResponse>(res, true);
     localStorage.setItem('gymfit_token', data.access_token);
     localStorage.setItem('gymfit_usuario', JSON.stringify(data.usuario));
     return data;
@@ -125,41 +147,46 @@ export const authApi = {
   isLoggedIn(): boolean { return !!getToken(); },
 };
 
-//  Perfil API (HU-03) 
+// Perfil API (HU-03) 
 
 export const perfilApi = {
-  /**
-   * GET /api/auth/perfil
-   * Datos frescos del usuario autenticado desde el servidor.
-   */
+  /** GET /api/auth/perfil — datos frescos del usuario autenticado */
   async obtener(): Promise<PerfilCompleto> {
     const res = await fetch(`${BASE_URL}/auth/perfil`, { headers: buildHeaders() });
     return handleResponse<PerfilCompleto>(res);
   },
 
   /**
-   * PUT /api/auth/perfil
-   * Actualiza nombre y/o teléfono (campos no críticos).
+   * PUT /api/auth/perfil — actualiza nombre y/o teléfono.
+   * Recibe el callback onNombreActualizado para sincronizar el AuthContext
+   * sin recargar la página (HU-03 UX).
    */
-  async actualizar(payload: ActualizarPerfilPayload): Promise<PerfilCompleto> {
+  async actualizar(
+    payload: ActualizarPerfilPayload,
+    onNombreActualizado?: (nombre: string) => void,
+  ): Promise<PerfilCompleto> {
     const res = await fetch(`${BASE_URL}/auth/perfil`, {
       method: 'PUT', headers: buildHeaders(), body: JSON.stringify(payload),
     });
     const data = await handleResponse<PerfilCompleto>(res);
-    // Actualizar nombre en localStorage si cambió
+
+    // Actualizar localStorage
     const local = localStorage.getItem('gymfit_usuario');
-    if (local && payload.nombre) {
+    if (local) {
       const parsed = JSON.parse(local);
-      parsed.nombre = data.nombre;
+      if (data.nombre) parsed.nombre = data.nombre;
       localStorage.setItem('gymfit_usuario', JSON.stringify(parsed));
     }
+
+    // Notificar al AuthContext para actualizar el topbar sin recargar
+    if (data.nombre && onNombreActualizado) {
+      onNombreActualizado(data.nombre);
+    }
+
     return data;
   },
 
-  /**
-   * PUT /api/auth/perfil/password
-   * Cambia la contraseña validando primero la actual con bcrypt en el servidor.
-   */
+  /** PUT /api/auth/perfil/password — cambia contraseña validando la actual */
   async cambiarPassword(payload: CambiarPasswordPayload): Promise<{ mensaje: string }> {
     const res = await fetch(`${BASE_URL}/auth/perfil/password`, {
       method: 'PUT', headers: buildHeaders(), body: JSON.stringify(payload),
@@ -168,7 +195,7 @@ export const perfilApi = {
   },
 };
 
-// Usuarios API (HU-01 CRUD admin)
+//  Usuarios API (HU-01 CRUD admin)
 
 export const usuariosApi = {
   async findAll(): Promise<UsuarioCompleto[]> {
@@ -197,19 +224,28 @@ export const usuariosApi = {
     });
     return handleResponse<void>(res);
   },
+  /** Reactiva un usuario inactivo (estado → true) */
+  async reactivar(id: number): Promise<UsuarioCompleto> {
+    const res = await fetch(`${BASE_URL}/usuarios/${id}`, {
+      method: 'PUT', headers: buildHeaders(),
+      body: JSON.stringify({ estado: true }),
+    });
+    return handleResponse<UsuarioCompleto>(res);
+  },
 };
 
-//  Roles API 
+// Roles API 
 
 export const rolesApi = {
   async findAll(): Promise<Rol[]> {
     const res = await fetch(`${BASE_URL}/roles`, { headers: buildHeaders(false) });
-    return handleResponse<Rol[]>(res);
+    // Ruta pública
+    return handleResponse<Rol[]>(res, true);
   },
   async seed(): Promise<{ mensaje: string; roles: Rol[] }> {
     const res = await fetch(`${BASE_URL}/roles/seed`, {
       method: 'POST', headers: buildHeaders(false),
     });
-    return handleResponse<{ mensaje: string; roles: Rol[] }>(res);
+    return handleResponse<{ mensaje: string; roles: Rol[] }>(res, true);
   },
 };
