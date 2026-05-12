@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+
 import "@/styles/base/globals.css";
+import { AuthProvider } from "@/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "GymFit | Administración y Control",
@@ -13,7 +15,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        {/*
+          AuthProvider envuelve toda la app para que cualquier
+          componente pueda acceder al contexto de autenticación
+          mediante useAuth().
+        */}
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }
