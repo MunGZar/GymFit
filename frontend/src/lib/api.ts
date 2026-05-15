@@ -72,23 +72,12 @@ function buildHeaders(includeAuth = true): Record<string, string> {
 
 /**
  * Interceptor 401 global (HU-02/03 — Seguridad)
- *
- * Todas las llamadas autenticadas pasan por aquí.
- * Si el servidor devuelve 401 (token expirado o inválido):
- *   1. Limpia el localStorage
- *   2. Redirige al login automáticamente
- *   3. Lanza el error para que el componente también lo sepa
- *
- * Las rutas públicas (login, register, roles) usan buildHeaders(false)
- * y nunca pasan por este interceptor.
  */
 async function handleResponse<T>(res: Response, esRutaPublica = false): Promise<T> {
   if (!res.ok) {
-    // Interceptor 401: token expirado o inválido
     if (res.status === 401 && !esRutaPublica && typeof window !== 'undefined') {
       localStorage.removeItem('gymfit_token');
       localStorage.removeItem('gymfit_usuario');
-      // Solo redirige si no estamos ya en /login
       if (!window.location.pathname.startsWith('/login')) {
         window.location.href = '/login?sesion=expirada';
       }
@@ -113,7 +102,6 @@ export const authApi = {
     const res = await fetch(`${BASE_URL}/auth/register`, {
       method: 'POST', headers: buildHeaders(false), body: JSON.stringify(payload),
     });
-    // Ruta pública — no activa el interceptor 401
     const data = await handleResponse<LoginResponse>(res, true);
     localStorage.setItem('gymfit_token', data.access_token);
     localStorage.setItem('gymfit_usuario', JSON.stringify(data.usuario));
@@ -124,7 +112,6 @@ export const authApi = {
     const res = await fetch(`${BASE_URL}/auth/login`, {
       method: 'POST', headers: buildHeaders(false), body: JSON.stringify(payload),
     });
-    // Ruta pública — no activa el interceptor 401
     const data = await handleResponse<LoginResponse>(res, true);
     localStorage.setItem('gymfit_token', data.access_token);
     localStorage.setItem('gymfit_usuario', JSON.stringify(data.usuario));
@@ -147,20 +134,14 @@ export const authApi = {
   isLoggedIn(): boolean { return !!getToken(); },
 };
 
-// Perfil API (HU-03) 
+// Perfil API (HU-03)
 
 export const perfilApi = {
-  /** GET /api/auth/perfil — datos frescos del usuario autenticado */
   async obtener(): Promise<PerfilCompleto> {
     const res = await fetch(`${BASE_URL}/auth/perfil`, { headers: buildHeaders() });
     return handleResponse<PerfilCompleto>(res);
   },
 
-  /**
-   * PUT /api/auth/perfil — actualiza nombre y/o teléfono.
-   * Recibe el callback onNombreActualizado para sincronizar el AuthContext
-   * sin recargar la página (HU-03 UX).
-   */
   async actualizar(
     payload: ActualizarPerfilPayload,
     onNombreActualizado?: (nombre: string) => void,
@@ -170,7 +151,6 @@ export const perfilApi = {
     });
     const data = await handleResponse<PerfilCompleto>(res);
 
-    // Actualizar localStorage
     const local = localStorage.getItem('gymfit_usuario');
     if (local) {
       const parsed = JSON.parse(local);
@@ -178,7 +158,6 @@ export const perfilApi = {
       localStorage.setItem('gymfit_usuario', JSON.stringify(parsed));
     }
 
-    // Notificar al AuthContext para actualizar el topbar sin recargar
     if (data.nombre && onNombreActualizado) {
       onNombreActualizado(data.nombre);
     }
@@ -186,7 +165,6 @@ export const perfilApi = {
     return data;
   },
 
-  /** PUT /api/auth/perfil/password — cambia contraseña validando la actual */
   async cambiarPassword(payload: CambiarPasswordPayload): Promise<{ mensaje: string }> {
     const res = await fetch(`${BASE_URL}/auth/perfil/password`, {
       method: 'PUT', headers: buildHeaders(), body: JSON.stringify(payload),
@@ -224,7 +202,6 @@ export const usuariosApi = {
     });
     return handleResponse<void>(res);
   },
-  /** Reactiva un usuario inactivo (estado → true) */
   async reactivar(id: number): Promise<UsuarioCompleto> {
     const res = await fetch(`${BASE_URL}/usuarios/${id}`, {
       method: 'PUT', headers: buildHeaders(),
@@ -234,7 +211,7 @@ export const usuariosApi = {
   },
 };
 
-// Roles API 
+// Socios & Roles API
 
 export interface SocioCompleto {
   id_socio: number;
@@ -272,7 +249,6 @@ export const sociosApi = {
 export const rolesApi = {
   async findAll(): Promise<Rol[]> {
     const res = await fetch(`${BASE_URL}/roles`, { headers: buildHeaders(false) });
-    // Ruta pública
     return handleResponse<Rol[]>(res, true);
   },
   async seed(): Promise<{ mensaje: string; roles: Rol[] }> {
@@ -387,23 +363,74 @@ export const progresoApi = {
     const res = await fetch(`${BASE_URL}/progreso/socio/${idSocio}/comparativa`, { headers: buildHeaders() });
     return handleResponse<ComparativaProgreso>(res);
   },
-};// --- Rutinas API ---
+};
+
+// ─── Ejercicios API (HU-11) ───────────────────────────────────────────────────
+
+export interface Ejercicio {
+  id_ejercicio: number;
+  nombre: string;
+  descripcion: string | null;
+  grupo_muscular: string | null;
+}
+
+export interface CreateEjercicioPayload {
+  nombre: string;
+  descripcion?: string;
+  grupo_muscular?: string;
+}
+
+export const ejerciciosApi = {
+  async findAll(): Promise<Ejercicio[]> {
+    const res = await fetch(`${BASE_URL}/ejercicios`, { headers: buildHeaders() });
+    return handleResponse<Ejercicio[]>(res);
+  },
+  async create(payload: CreateEjercicioPayload): Promise<Ejercicio> {
+    const res = await fetch(`${BASE_URL}/ejercicios`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<Ejercicio>(res);
+  },
+};
+
+// ─── Rutinas API (HU-11) ──────────────────────────────────────────────────────
+
+export interface RutinaEjercicioItem {
+  id: number;
+  series: number | null;
+  repeticiones: number | null;
+  descanso: number | null; // en segundos
+  ejercicio: Ejercicio;
+}
 
 export interface Rutina {
   id_rutina: number;
   nombre: string;
   descripcion: string | null;
-  nivel: string;
+  nivel: string | null;
   objetivo: string | null;
-  activo: boolean;
+  rutina_ejercicios?: RutinaEjercicioItem[];
+}
+
+export interface CreateRutinaPayload {
+  nombre: string;
+  descripcion?: string;
+  nivel?: string;
+  objetivo?: string;
+  ejercicios?: {
+    id_ejercicio: number;
+    series?: number;
+    repeticiones?: number;
+    descanso?: number;
+    observaciones?: string;
+  }[];
 }
 
 export interface AsignacionRutina {
-  id_asignacion_rutina: number;
-  id_socio: number;
-  id_rutina: number;
+  id: number;
   fecha_asignacion: string;
   rutina: Rutina;
+  socio?: { id_socio: number };
 }
 
 export const rutinasApi = {
@@ -415,11 +442,23 @@ export const rutinasApi = {
     const res = await fetch(`${BASE_URL}/rutinas/${id}`, { headers: buildHeaders() });
     return handleResponse<Rutina>(res);
   },
-  async create(payload: Partial<Rutina>): Promise<Rutina> {
+  async create(payload: CreateRutinaPayload): Promise<Rutina> {
     const res = await fetch(`${BASE_URL}/rutinas`, {
       method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
     });
     return handleResponse<Rutina>(res);
+  },
+  async update(id: number, payload: Partial<CreateRutinaPayload>): Promise<Rutina> {
+    const res = await fetch(`${BASE_URL}/rutinas/${id}`, {
+      method: 'PUT', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<Rutina>(res);
+  },
+  async remove(id: number): Promise<void> {
+    const res = await fetch(`${BASE_URL}/rutinas/${id}`, {
+      method: 'DELETE', headers: buildHeaders(),
+    });
+    return handleResponse<void>(res);
   },
   async asignar(payload: { id_socio: number; id_rutina: number; fecha_asignacion: string }): Promise<void> {
     const res = await fetch(`${BASE_URL}/rutinas/asignaciones`, {
@@ -430,5 +469,5 @@ export const rutinasApi = {
   async findAsignacionesBySocio(idSocio: number): Promise<AsignacionRutina[]> {
     const res = await fetch(`${BASE_URL}/rutinas/asignaciones/socio/${idSocio}`, { headers: buildHeaders() });
     return handleResponse<AsignacionRutina[]>(res);
-  }
+  },
 };
