@@ -236,6 +236,39 @@ export const usuariosApi = {
 
 // Roles API 
 
+export interface SocioCompleto {
+  id_socio: number;
+  direccion: string | null;
+  datos_salud: string | null;
+  activo: boolean;
+  fecha_registro: string;
+  usuario: UsuarioCompleto;
+  asignaciones_entrenador: Asignacion[];
+}
+
+export const sociosApi = {
+  async findAll(): Promise<SocioCompleto[]> {
+    const res = await fetch(`${BASE_URL}/socios`, { headers: buildHeaders() });
+    return handleResponse<SocioCompleto[]>(res);
+  },
+  async getMiPerfil(): Promise<SocioCompleto> {
+    const res = await fetch(`${BASE_URL}/socios/perfil/me`, { headers: buildHeaders() });
+    return handleResponse<SocioCompleto>(res);
+  },
+  async findOne(id: number): Promise<SocioCompleto> {
+    const res = await fetch(`${BASE_URL}/socios/${id}`, { headers: buildHeaders() });
+    return handleResponse<SocioCompleto>(res);
+  },
+  async create(payload: { id_usuario: number; direccion?: string; datos_salud?: string }): Promise<SocioCompleto> {
+    const res = await fetch(`${BASE_URL}/socios`, {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload),
+    });
+    return handleResponse<SocioCompleto>(res);
+  },
+};
+
 export const rolesApi = {
   async findAll(): Promise<Rol[]> {
     const res = await fetch(`${BASE_URL}/roles`, { headers: buildHeaders(false) });
@@ -248,4 +281,154 @@ export const rolesApi = {
     });
     return handleResponse<{ mensaje: string; roles: Rol[] }>(res, true);
   },
+};
+
+//  Entrenadores API (HU-08)
+
+export interface Entrenador {
+  id_entrenador: number;
+  especialidad: string | null;
+  experiencia: number | null;
+  usuario: UsuarioCompleto;
+}
+
+export interface Asignacion {
+  id_asignacion: number;
+  fecha_asignacion: string;
+  socio: { id_socio: number; usuario: UsuarioCompleto };
+  entrenador: Entrenador;
+}
+
+export const entrenadoresApi = {
+  async findAll(): Promise<Entrenador[]> {
+    const res = await fetch(`${BASE_URL}/entrenadores`, { headers: buildHeaders() });
+    return handleResponse<Entrenador[]>(res);
+  },
+  async asignar(payload: { id_entrenador: number; id_socio: number; fecha_asignacion: string }): Promise<void> {
+    const res = await fetch(`${BASE_URL}/entrenadores/asignaciones`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<void>(res);
+  },
+  async asignarMasivo(payload: { id_entrenador: number; id_socios: number[]; fecha_asignacion: string }): Promise<void> {
+    const res = await fetch(`${BASE_URL}/entrenadores/asignaciones/masiva`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<void>(res);
+  },
+  async findAsignaciones(idEntrenador: number): Promise<Asignacion[]> {
+    const res = await fetch(`${BASE_URL}/entrenadores/${idEntrenador}/asignaciones`, { headers: buildHeaders() });
+    return handleResponse<Asignacion[]>(res);
+  },
+};
+
+//  Evaluaciones API (HU-09)
+
+export interface Evaluacion {
+  id_evaluacion: number;
+  peso: number;
+  grasa: number | null;
+  medidas: string | null;
+  fecha: string;
+  socio: { id_socio: number; usuario?: { nombre: string } };
+}
+
+export interface CreateEvaluacionPayload {
+  id_socio: number;
+  peso: number;
+  grasa?: number | null;
+  medidas?: string | null;
+  fecha: string;
+}
+
+export const evaluacionesApi = {
+  async create(payload: CreateEvaluacionPayload): Promise<Evaluacion> {
+    const res = await fetch(`${BASE_URL}/evaluaciones`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<Evaluacion>(res);
+  },
+  async findBySocio(idSocio: number): Promise<Evaluacion[]> {
+    const res = await fetch(`${BASE_URL}/evaluaciones/socio/${idSocio}`, { headers: buildHeaders() });
+    return handleResponse<Evaluacion[]>(res);
+  },
+};
+
+//  Progreso API (HU-10)
+
+export interface Progreso {
+  id_progreso: number;
+  peso: number | null;
+  observaciones: string | null;
+  fecha: string;
+}
+
+export interface CreateProgresoPayload {
+  id_socio: number;
+  peso?: number;
+  observaciones?: string;
+  fecha: string;
+}
+
+export interface ComparativaProgreso {
+  socio_id: number;
+  evaluacion_inicial: Evaluacion | null;
+  historial_progreso: Progreso[];
+}
+
+export const progresoApi = {
+  async create(payload: CreateProgresoPayload): Promise<Progreso> {
+    const res = await fetch(`${BASE_URL}/progreso`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<Progreso>(res);
+  },
+  async getComparativa(idSocio: number): Promise<ComparativaProgreso> {
+    const res = await fetch(`${BASE_URL}/progreso/socio/${idSocio}/comparativa`, { headers: buildHeaders() });
+    return handleResponse<ComparativaProgreso>(res);
+  },
+};// --- Rutinas API ---
+
+export interface Rutina {
+  id_rutina: number;
+  nombre: string;
+  descripcion: string | null;
+  nivel: string;
+  objetivo: string | null;
+  activo: boolean;
+}
+
+export interface AsignacionRutina {
+  id_asignacion_rutina: number;
+  id_socio: number;
+  id_rutina: number;
+  fecha_asignacion: string;
+  rutina: Rutina;
+}
+
+export const rutinasApi = {
+  async findAll(): Promise<Rutina[]> {
+    const res = await fetch(`${BASE_URL}/rutinas`, { headers: buildHeaders() });
+    return handleResponse<Rutina[]>(res);
+  },
+  async findOne(id: number): Promise<Rutina> {
+    const res = await fetch(`${BASE_URL}/rutinas/${id}`, { headers: buildHeaders() });
+    return handleResponse<Rutina>(res);
+  },
+  async create(payload: Partial<Rutina>): Promise<Rutina> {
+    const res = await fetch(`${BASE_URL}/rutinas`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<Rutina>(res);
+  },
+  async asignar(payload: { id_socio: number; id_rutina: number; fecha_asignacion: string }): Promise<void> {
+    const res = await fetch(`${BASE_URL}/rutinas/asignaciones`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<void>(res);
+  },
+  async findAsignacionesBySocio(idSocio: number): Promise<AsignacionRutina[]> {
+    const res = await fetch(`${BASE_URL}/rutinas/asignaciones/socio/${idSocio}`, { headers: buildHeaders() });
+    return handleResponse<AsignacionRutina[]>(res);
+  }
 };

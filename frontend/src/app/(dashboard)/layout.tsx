@@ -11,6 +11,7 @@ import {
   Package, BarChart3, Settings, LogOut, Bell, Menu,
   UserPlus, ClipboardList, ShieldCheck, UserCircle,
 } from 'lucide-react';
+import { hasPermission } from '@/lib/rbac';
 
 const navItems = [
   { path: '/dashboard',     label: 'Dashboard',      icon: LayoutDashboard },
@@ -36,6 +37,19 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
   const { usuario, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  // Filtrar items según rol
+  const filteredNavItems = navItems.filter(item => 
+    usuario?.rol && hasPermission(usuario.rol, item.path)
+  );
+
+  // Proteger ruta actual (Redirigir si no tiene permiso)
+  React.useEffect(() => {
+    if (usuario?.rol && pathname && !hasPermission(usuario.rol, pathname)) {
+      console.warn(`Acceso denegado a ${pathname} para el rol ${usuario.rol}`);
+      router.push('/dashboard');
+    }
+  }, [pathname, usuario, router]);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.backgroundContainer}>
@@ -53,7 +67,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
 
         <nav className={styles.nav}>
           <ul>
-            {navItems.map((item) => {
+            {filteredNavItems.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.path || pathname?.startsWith(`${item.path}/`);
               return (
@@ -66,6 +80,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
             })}
           </ul>
         </nav>
+
 
         <div className={styles.sidebarFooter}>
           {/* Enlace al perfil propio — HU-03 */}
