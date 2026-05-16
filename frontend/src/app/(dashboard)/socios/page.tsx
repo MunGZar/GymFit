@@ -134,10 +134,10 @@ export default function SociosPage() {
                   <td style={{ padding: '1rem 1.5rem' }}>
                     <span style={{ 
                       display: 'inline-block', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: '600',
-                      background: s.activo ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                      color: s.activo ? '#4ade80' : '#f87171'
+                      background: s.usuario?.estado ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                      color: s.usuario?.estado ? '#4ade80' : '#f87171'
                     }}>
-                      {s.activo ? 'Activo' : 'Inactivo'}
+                      {s.usuario?.estado ? 'Activo' : 'Inactivo'}
                     </span>
                   </td>
                   <td style={{ padding: '1rem 1.5rem', textAlign: 'right' }}>

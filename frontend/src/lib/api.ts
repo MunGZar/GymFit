@@ -211,15 +211,68 @@ export const usuariosApi = {
   },
 };
 
+//  Prospectos API (HU-04, HU-05)
+
+export interface Prospecto {
+  id_prospecto: number;
+  nombre: string;
+  telefono: string | null;
+  interes: string | null;
+  origen: string | null;
+  estado: string;
+  fecha_registro: string;
+}
+
+export interface CreateProspectoPayload {
+  nombre: string;
+  telefono?: string;
+  interes?: string;
+  origen?: string;
+}
+
+export interface ConvertirProspectoPayload {
+  identificacion: string;
+  correo: string;
+  password: string;
+}
+
+export const prospectosApi = {
+  async findAll(): Promise<Prospecto[]> {
+    const res = await fetch(`${BASE_URL}/prospectos`, { headers: buildHeaders() });
+    return handleResponse<Prospecto[]>(res);
+  },
+  async create(payload: CreateProspectoPayload): Promise<Prospecto> {
+    const res = await fetch(`${BASE_URL}/prospectos`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<Prospecto>(res);
+  },
+  async update(id: number, payload: Partial<CreateProspectoPayload & { estado: string }>): Promise<Prospecto> {
+    const res = await fetch(`${BASE_URL}/prospectos/${id}`, {
+      method: 'PUT', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<Prospecto>(res);
+  },
+  async convertir(id: number, payload: ConvertirProspectoPayload): Promise<{ mensaje: string; socio: any }> {
+    const res = await fetch(`${BASE_URL}/prospectos/${id}/convertir`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<{ mensaje: string; socio: any }>(res);
+  },
+};
+
 // Socios & Roles API
 
 export interface SocioCompleto {
   id_socio: number;
-  direccion: string | null;
-  datos_salud: string | null;
-  activo: boolean;
-  fecha_registro: string;
-  usuario: UsuarioCompleto;
+  usuario: {
+    id_usuario: number;
+    nombre: string;
+    correo: string;
+    identificacion: string;
+    estado: boolean;
+  };
+  membresias: any[];
   asignaciones_entrenador: Asignacion[];
 }
 
@@ -280,6 +333,12 @@ export const entrenadoresApi = {
     const res = await fetch(`${BASE_URL}/entrenadores`, { headers: buildHeaders() });
     return handleResponse<Entrenador[]>(res);
   },
+  async create(payload: { id_usuario: number; especialidad?: string; experiencia?: string }): Promise<Entrenador> {
+    const res = await fetch(`${BASE_URL}/entrenadores`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<Entrenador>(res);
+  },
   async asignar(payload: { id_entrenador: number; id_socio: number; fecha_asignacion: string }): Promise<void> {
     const res = await fetch(`${BASE_URL}/entrenadores/asignaciones`, {
       method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
@@ -295,6 +354,78 @@ export const entrenadoresApi = {
   async findAsignaciones(idEntrenador: number): Promise<Asignacion[]> {
     const res = await fetch(`${BASE_URL}/entrenadores/${idEntrenador}/asignaciones`, { headers: buildHeaders() });
     return handleResponse<Asignacion[]>(res);
+  },
+};
+
+//  Planes API (HU-05)
+
+export interface Plan {
+  id_plan: number;
+  nombre: string;
+  descripcion: string | null;
+  precio: number;
+  duracion_meses: number;
+  activo: boolean;
+}
+
+export interface CreatePlanPayload {
+  nombre: string;
+  descripcion?: string;
+  precio: number;
+  duracion_meses: number;
+}
+
+export const planesApi = {
+  async findAll(): Promise<Plan[]> {
+    const res = await fetch(`${BASE_URL}/planes`, { headers: buildHeaders() });
+    return handleResponse<Plan[]>(res);
+  },
+  async create(payload: CreatePlanPayload): Promise<Plan> {
+    const res = await fetch(`${BASE_URL}/planes`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<Plan>(res);
+  },
+};
+
+//  Membresías API (HU-06, HU-07)
+
+export interface Membresia {
+  id_membresia: number;
+  fecha_inicio: string;
+  fecha_fin: string;
+  estado: string;
+  plan: Plan;
+  socio: SocioCompleto;
+}
+
+export interface CreateMembresiaPayload {
+  id_socio: number;
+  id_plan: number;
+  fecha_inicio: string;
+  fecha_fin: string;
+}
+
+export const membresiasApi = {
+  async findAll(): Promise<Membresia[]> {
+    const res = await fetch(`${BASE_URL}/membresias`, { headers: buildHeaders() });
+    return handleResponse<Membresia[]>(res);
+  },
+  async findBySocio(idSocio: number): Promise<Membresia[]> {
+    const res = await fetch(`${BASE_URL}/membresias/socio/${idSocio}`, { headers: buildHeaders() });
+    return handleResponse<Membresia[]>(res);
+  },
+  async create(payload: CreateMembresiaPayload): Promise<Membresia> {
+    const res = await fetch(`${BASE_URL}/membresias`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<Membresia>(res);
+  },
+  async updateStatus(id: number, estado: string): Promise<Membresia> {
+    const res = await fetch(`${BASE_URL}/membresias/${id}`, {
+      method: 'PUT', headers: buildHeaders(), body: JSON.stringify({ estado }),
+    });
+    return handleResponse<Membresia>(res);
   },
 };
 

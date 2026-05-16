@@ -114,8 +114,8 @@ export default function SocioProfilePage() {
           <h1 style={{ fontSize: '1.8rem', marginBottom: '5px' }}>{socio.usuario?.nombre || 'Socio'}</h1>
           <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>{socio.usuario?.correo || 'Sin correo'} | ID: {socio.usuario?.identificacion || '—'}</p>
           <div style={{ display: 'flex', gap: '10px' }}>
-            <span style={{ background: socio.activo ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)', color: socio.activo ? '#4ade80' : '#f87171', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: '600' }}>
-              {socio.activo ? 'Activo' : 'Inactivo'}
+            <span style={{ background: socio.usuario?.estado ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)', color: socio.usuario?.estado ? '#4ade80' : '#f87171', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: '600' }}>
+              {socio.usuario?.estado ? 'Activo' : 'Inactivo'}
             </span>
           </div>
         </div>

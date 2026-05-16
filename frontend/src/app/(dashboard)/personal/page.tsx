@@ -118,6 +118,13 @@ export default function PersonalPage() {
         const payload: CreateUsuarioPayload = { nombre:form.nombre.trim(), identificacion:form.identificacion.trim(), correo:form.correo.trim().toLowerCase(), password:form.password, telefono:form.telefono.trim()||undefined, id_rol:Number(form.id_rol) };
         const nuevo = await usuariosApi.create(payload);
         setUsuarios(prev => [...prev, nuevo as UsuarioCompleto]);
+
+        const rolElegido = roles.find(r => r.id_rol === Number(form.id_rol));
+        if (rolElegido?.nombre.toLowerCase() === 'entrenador') {
+          await entrenadoresApi.create({ id_usuario: nuevo.id_usuario, especialidad: 'Entrenador General' });
+        } else if (rolElegido?.nombre.toLowerCase() === 'socio') {
+          await sociosApi.create({ id_usuario: nuevo.id_usuario });
+        }
       } else if (usuarioEditando) {
         const payload: UpdateUsuarioPayload = { nombre:form.nombre.trim(), identificacion:form.identificacion.trim(), correo:form.correo.trim().toLowerCase(), telefono:form.telefono.trim()||undefined, id_rol:Number(form.id_rol), estado:form.estado, ...(form.password?{password:form.password}:{}) };
         const actualizado = await usuariosApi.update(usuarioEditando.id_usuario, payload);
@@ -326,6 +333,7 @@ export default function PersonalPage() {
               <div><label style={labelStyle}>Nombre *</label><input name="nombre" value={form.nombre} onChange={handleFormChange} style={inputStyle}/></div>
               <div><label style={labelStyle}>Identificación *</label><input name="identificacion" value={form.identificacion} onChange={handleFormChange} style={inputStyle}/></div>
               <div><label style={labelStyle}>Correo *</label><input name="correo" value={form.correo} onChange={handleFormChange} style={inputStyle}/></div>
+              <div><label style={labelStyle}>Teléfono</label><input name="telefono" value={form.telefono} onChange={handleFormChange} style={inputStyle}/></div>
               <div><label style={labelStyle}>Password</label><input name="password" type="password" value={form.password} onChange={handleFormChange} style={inputStyle}/></div>
               <div><label style={labelStyle}>Rol *</label>
                 <select name="id_rol" value={form.id_rol} onChange={handleFormChange} style={inputStyle}>
@@ -356,7 +364,7 @@ export default function PersonalPage() {
                 <label style={labelStyle}>Socio</label>
                 <select value={idSocioSel} onChange={e=>setIdSocioSel(e.target.value)} style={inputStyle}>
                   <option value="">Selecciona...</option>
-                  {sociosList.filter(s=>s.activo).map(s=>(
+                  {sociosList.filter(s=>s.usuario?.estado).map(s=>(
                     <option key={s.id_socio} value={s.id_socio}>
                       {s.usuario.nombre} ({s.usuario.identificacion})
                     </option>
