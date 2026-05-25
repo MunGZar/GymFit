@@ -13,7 +13,7 @@ import {
 } from '@/lib/api';
 import { authApi } from '@/lib/api';
 
-// ─── Tipos locales ────────────────────────────────────────────────────────────
+//  Tipos locales 
 
 interface EjercicioEnForm {
   id_ejercicio: number;
@@ -32,7 +32,7 @@ const nivelColor: Record<string, string> = {
   Avanzado: '#ff4757',
 };
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+//  Helpers 
 
 function fmtDescanso(seg: number | null): string {
   if (!seg) return '—';
@@ -40,7 +40,7 @@ function fmtDescanso(seg: number | null): string {
   return `${Math.floor(seg / 60)}min ${seg % 60 > 0 ? `${seg % 60}s` : ''}`.trim();
 }
 
-// ─── Componente principal ─────────────────────────────────────────────────────
+//  Componente principal ─
 
 export default function RutinasPage() {
   const [rutinas, setRutinas]   = useState<Rutina[]>([]);
@@ -78,7 +78,7 @@ export default function RutinasPage() {
   const userLocal = authApi.getUsuarioLocal();
   const canCreate = ['admin', 'entrenador'].includes(userLocal?.rol?.toLowerCase() ?? '');
 
-  // ── Datos ────────────────────────────────────────────────────────────────
+  // Datos 
 
   const cargarDatos = useCallback(async () => {
     setCargando(true);
@@ -102,14 +102,14 @@ export default function RutinasPage() {
 
   useEffect(() => { cargarDatos(); }, [cargarDatos]);
 
-  // ── Toast ────────────────────────────────────────────────────────────────
+  //  Toast 
 
   function mostrarToast(msg: string, tipo: 'ok' | 'err') {
     setToast({ msg, tipo });
     setTimeout(() => setToast(null), 3500);
   }
 
-  // ── Ejercicios en el form ─────────────────────────────────────────────────
+  // Ejercicios en el form de creación de rutina
 
   function agregarEjercicio() {
     const id = Number(ejercicioSelId);
@@ -135,7 +135,7 @@ export default function RutinasPage() {
     setEjerciciosForm(prev => prev.map((e, i) => i === idx ? { ...e, [campo]: valor } : e));
   }
 
-  // ── Crear rutina ──────────────────────────────────────────────────────────
+  // Crear rutina 
 
   async function handleCrearRutina(ev: React.FormEvent) {
     ev.preventDefault();
@@ -172,7 +172,7 @@ export default function RutinasPage() {
     setEjercicioSelId('');
   }
 
-  // ── Asignar rutina ────────────────────────────────────────────────────────
+  //  Asignar rutina 
 
   async function handleAsignar(ev: React.FormEvent) {
     ev.preventDefault();
@@ -194,7 +194,7 @@ export default function RutinasPage() {
     }
   }
 
-  // ── Filtro ────────────────────────────────────────────────────────────────
+  //  Filtro
 
   const filtradas = rutinas.filter(r =>
     (r.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
@@ -202,7 +202,7 @@ export default function RutinasPage() {
     (nivelFiltro === '' || r.nivel === nivelFiltro)
   );
 
-  // ── Estilos inline compartidos ────────────────────────────────────────────
+  // Estilos inline compartidos 
 
   const inputStyle: React.CSSProperties = {
     width: '100%', background: 'rgba(0,0,0,0.3)',
@@ -217,12 +217,12 @@ export default function RutinasPage() {
     textTransform: 'uppercase', letterSpacing: '0.05em',
   };
 
-  // ─────────────────────────────────────────────────────────────────────────
+ 
 
   return (
     <div className={styles.container}>
 
-      {/* ── Toast ── */}
+      {/* Toast */}
       {toast && (
         <div style={{
           position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 9999,
@@ -240,14 +240,14 @@ export default function RutinasPage() {
         </div>
       )}
 
-      {/* ── Header ── */}
+      {/*  Header */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h2 className={styles.sectionTitle} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.4rem' }}>
             <ClipboardList size={24} color="var(--primary)" /> Gestión de Rutinas
           </h2>
           <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>
-            Crea planes de entrenamiento con ejercicios, series y repeticiones · HU-11
+            Crea planes de entrenamiento con ejercicios, series y repeticiones ·
           </p>
         </div>
 
@@ -269,7 +269,7 @@ export default function RutinasPage() {
         )}
       </div>
 
-      {/* ── Barra de filtros ── */}
+      {/* Barra de filtros  */}
       <div className="glass" style={{ padding: '1rem 1.5rem', borderRadius: '16px', display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
           <Search size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.35)' }} />
@@ -296,14 +296,14 @@ export default function RutinasPage() {
         <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.82rem' }}>{filtradas.length} rutina(s)</span>
       </div>
 
-      {/* ── Error global ── */}
+      {/*  Error global  */}
       {error && (
         <div style={{ padding: '1rem', background: 'rgba(255,60,60,0.1)', border: '1px solid rgba(255,60,60,0.3)', borderRadius: '12px', color: '#ff6b6b', marginBottom: '1.5rem', display: 'flex', gap: '10px', alignItems: 'center' }}>
           <AlertCircle size={18} /> {error}
         </div>
       )}
 
-      {/* ── Grid de rutinas ── */}
+      {/*  Grid de rutinas  */}
       {cargando ? (
         <div style={{ padding: '3rem', textAlign: 'center', color: 'rgba(255,255,255,0.35)' }}>
           Cargando rutinas...
@@ -413,9 +413,7 @@ export default function RutinasPage() {
         </div>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════════════
-          MODAL: CREAR RUTINA
-      ══════════════════════════════════════════════════════════════════════ */}
+      {/*  MODAL: CREAR RUTINA*/}
       {modalCrear && (
         <div
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '1.5rem', overflowY: 'auto' }}
@@ -436,7 +434,7 @@ export default function RutinasPage() {
 
             <form onSubmit={handleCrearRutina} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
 
-              {/* Nombre */}
+              /* Nombre 
               <div>
                 <label style={labelStyle}>Nombre de la Rutina *</label>
                 <input
@@ -446,7 +444,7 @@ export default function RutinasPage() {
                 />
               </div>
 
-              {/* Descripción */}
+              /* Descripción 
               <div>
                 <label style={labelStyle}>Descripción</label>
                 <textarea
@@ -457,7 +455,7 @@ export default function RutinasPage() {
                 />
               </div>
 
-              {/* Nivel + Objetivo */}
+              /* Nivel + Objetivo 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={labelStyle}>Nivel</label>
@@ -479,7 +477,7 @@ export default function RutinasPage() {
                 </div>
               </div>
 
-              {/* ── Sección Ejercicios ── */}
+              /* ── Sección Ejercicios 
               <div style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: '14px', overflow: 'hidden' }}>
                 <div style={{ background: 'rgba(0,242,255,0.06)', padding: '0.85rem 1.2rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Dumbbell size={16} color="var(--primary)" />
@@ -488,7 +486,7 @@ export default function RutinasPage() {
                 </div>
 
                 <div style={{ padding: '1rem 1.2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  {/* Selector agregar ejercicio */}
+                  /* Selector agregar ejercicio 
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <select
                       value={ejercicioSelId}
@@ -528,7 +526,7 @@ export default function RutinasPage() {
                             </button>
                           </div>
 
-                          {/* Series / Reps / Descanso */}
+                          /* Series / Reps / Descanso 
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
                             <div>
                               <label style={labelStyle}>Series</label>
@@ -556,7 +554,7 @@ export default function RutinasPage() {
                             </div>
                           </div>
 
-                          {/* Observaciones técnicas */}
+                          /* Observaciones técnicas
                           <div>
                             <label style={labelStyle}>Observaciones técnicas</label>
                             <input
@@ -572,7 +570,7 @@ export default function RutinasPage() {
                 </div>
               </div>
 
-              {/* Botón guardar */}
+              /* Botón guardar 
               <button
                 disabled={formLoading} type="submit"
                 style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))', color: '#000', padding: '1rem', borderRadius: '12px', border: 'none', fontWeight: 800, cursor: formLoading ? 'not-allowed' : 'pointer', opacity: formLoading ? 0.6 : 1, fontSize: '0.95rem' }}
@@ -584,9 +582,9 @@ export default function RutinasPage() {
         </div>
       )}
 
-      {/* ══════════════════════════════════════════════════════════════════════
+      
           MODAL: ASIGNAR RUTINA A SOCIO
-      ══════════════════════════════════════════════════════════════════════ */}
+      
       {modalAsignar && (
         <div
           style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}

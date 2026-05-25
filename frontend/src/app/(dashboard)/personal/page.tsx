@@ -198,7 +198,7 @@ export default function PersonalPage() {
       {/* Tabs */}
       <div style={{ display:'flex', gap:'1rem', marginBottom:'1.5rem', borderBottom:'1px solid rgba(255,255,255,0.05)', paddingBottom:'0.5rem' }}>
         <button onClick={() => setTab('usuarios')} style={{ background:'transparent', border:'none', borderBottom:tab==='usuarios'?'2px solid var(--primary)':'none', color:tab==='usuarios'?'#fff':'rgba(255,255,255,0.5)', padding:'0.5rem 1rem', cursor:'pointer', fontWeight:600 }}>Usuarios</button>
-        <button onClick={() => setTab('asignaciones')} style={{ background:'transparent', border:'none', borderBottom:tab==='asignaciones'?'2px solid var(--primary)':'none', color:tab==='asignaciones'?'#fff':'rgba(255,255,255,0.5)', padding:'0.5rem 1rem', cursor:'pointer', fontWeight:600 }}>Asignación de Entrenadores (HU-08)</button>
+        <button onClick={() => setTab('asignaciones')} style={{ background:'transparent', border:'none', borderBottom:tab==='asignaciones'?'2px solid var(--primary)':'none', color:tab==='asignaciones'?'#fff':'rgba(255,255,255,0.5)', padding:'0.5rem 1rem', cursor:'pointer', fontWeight:600 }}>Asignación de Entrenadores</button>
       </div>
 
       {tab === 'usuarios' ? (
@@ -347,7 +347,7 @@ export default function PersonalPage() {
         </div>
       )}
 
-      {/* Modal Asignar (HU-08) */}
+      {/* Modal Asignar  */}
       {modalAsignar && (
         <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.65)', backdropFilter:'blur(6px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={()=>setModalAsignar(false)}>
           <div className="glass" style={{ width:'100%', maxWidth:'400px', borderRadius:'20px', padding:'2rem' }} onClick={e => e.stopPropagation()}>

@@ -272,8 +272,10 @@ export interface SocioCompleto {
     identificacion: string;
     estado: boolean;
   };
-  membresias: any[];
+  membresias: Membresia[];
   asignaciones_entrenador: Asignacion[];
+  evaluaciones?: Evaluacion[];
+  progresos?: Progreso[];
 }
 
 export const sociosApi = {
@@ -496,7 +498,7 @@ export const progresoApi = {
   },
 };
 
-// ─── Ejercicios API (HU-11) ───────────────────────────────────────────────────
+//  Ejercicios API (HU-11) 
 
 export interface Ejercicio {
   id_ejercicio: number;
@@ -524,7 +526,7 @@ export const ejerciciosApi = {
   },
 };
 
-// ─── Rutinas API (HU-11) ──────────────────────────────────────────────────────
+//  Rutinas API (HU-11) 
 
 export interface RutinaEjercicioItem {
   id: number;

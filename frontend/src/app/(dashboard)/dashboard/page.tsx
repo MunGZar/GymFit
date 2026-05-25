@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import styles from '@/styles/pages/dashboard/dashboard.module.css';
-import { authApi, sociosApi, entrenadoresApi, progresoApi, type SocioCompleto, type Asignacion, type Progreso } from '@/lib/api';
+import { authApi, sociosApi, entrenadoresApi, progresoApi, membresiasApi, type SocioCompleto, type Asignacion, type Progreso, type Membresia } from '@/lib/api';
 import { canPerform } from '@/lib/rbac';
 import { Users, CreditCard, BarChart3, TrendingDown, Calendar, Dumbbell, UserCheck, TrendingUp, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
@@ -14,6 +14,9 @@ export default function DashboardPage() {
   const [misAsignaciones, setMisAsignaciones] = useState<Asignacion[]>([]);
   const [miPerfilSocio, setMiPerfilSocio] = useState<SocioCompleto | null>(null);
   const [miProgreso, setMiProgreso] = useState<Progreso[]>([]);
+  const [membresiasVencer, setMembresiasVencer] = useState<Membresia[]>([]);
+  const [totalSociosCount, setTotalSociosCount] = useState<number | null>(null);
+  const [activasCount, setActivasCount] = useState<number | null>(null);
   const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
@@ -29,7 +32,28 @@ export default function DashboardPage() {
       if (!user) return;
       setCargando(true);
       try {
-        if (role === 'entrenador') {
+        if (role === 'admin' || role === 'recepcionista') {
+          const [todasMems, todosSocs] = await Promise.all([
+            membresiasApi.findAll(),
+            sociosApi.findAll()
+          ]);
+          setTotalSociosCount(todosSocs.length);
+          
+          const activas = todasMems.filter(m => m.estado === 'activa' || m.estado === 'renovada');
+          setActivasCount(activas.length);
+
+          const hoy = new Date();
+          const sieteDiasMas = new Date();
+          sieteDiasMas.setDate(hoy.getDate() + 7);
+
+          const filtradas = todasMems.filter(m => {
+            if (m.estado !== 'activa' && m.estado !== 'renovada') return false;
+            const fechaFin = new Date(m.fecha_fin);
+            return fechaFin <= sieteDiasMas;
+          }).sort((a, b) => new Date(a.fecha_fin).getTime() - new Date(b.fecha_fin).getTime());
+
+          setMembresiasVencer(filtradas);
+        } else if (role === 'entrenador') {
           const todosTrainers = await entrenadoresApi.findAll();
           const yo = todosTrainers.find(t => t.usuario?.id_usuario === user.id_usuario);
           if (yo) {
@@ -58,6 +82,15 @@ export default function DashboardPage() {
 
   const canSeeMetrics = canPerform(role, 'view_reports');
 
+  const membresiasCriticas = membresiasVencer.filter(m => {
+    const hoy = new Date();
+    hoy.setHours(0,0,0,0);
+    const fin = new Date(m.fecha_fin);
+    fin.setHours(0,0,0,0);
+    const dias = Math.ceil((fin.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24));
+    return dias >= 0 && dias <= 3;
+  });
+
   return (
     <div className={styles.container}>
       <div style={{ marginBottom: '2rem', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
@@ -72,23 +105,90 @@ export default function DashboardPage() {
             {role === 'socio' && '¡Es un buen día para entrenar! Revisa tu rutina.'}
           </p>
         </div>
-        {role === 'socio' && miPerfilSocio && (
-          <div className="glass" style={{ padding:'0.5rem 1rem', borderRadius:'12px', border:'1px solid var(--primary-low)' }}>
-            <span style={{ fontSize:'0.8rem', color:'rgba(255,255,255,0.5)' }}>Estado de Membresía</span>
-            <p style={{ color:'var(--primary)', fontWeight:700 }}>{miPerfilSocio.activo ? 'ACTIVA' : 'INACTIVA'}</p>
-          </div>
-        )}
+        {role === 'socio' && miPerfilSocio && (() => {
+          const membresiaActiva = miPerfilSocio.membresias?.find(m => m.estado === 'activa' || m.estado === 'renovada');
+          return (
+            <div className="glass" style={{ padding:'0.5rem 1rem', borderRadius:'12px', border:'1px solid rgba(255,255,255,0.1)', textAlign: 'right' }}>
+              <span style={{ fontSize:'0.8rem', color:'rgba(255,255,255,0.5)' }}>Membresía Activa</span>
+              <p style={{ color:'var(--primary)', fontWeight:700, margin: '2px 0' }}>
+                {membresiaActiva ? membresiaActiva.plan?.nombre.toUpperCase() : 'SIN PLAN ACTIVO'}
+              </p>
+              {membresiaActiva && (
+                <span style={{ fontSize:'0.7rem', color:'rgba(255,255,255,0.4)', display: 'block' }}>
+                  Vence: {membresiaActiva.fecha_fin}
+                </span>
+              )}
+            </div>
+          );
+        })()}
       </div>
+
+      {canSeeMetrics && membresiasCriticas.length > 0 && (
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(234, 179, 8, 0.08))',
+          border: '1px solid rgba(239, 68, 68, 0.3)',
+          borderRadius: '16px',
+          padding: '1.2rem 1.5rem',
+          marginBottom: '1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '15px',
+          boxShadow: '0 0 15px rgba(239, 68, 68, 0.1)',
+        }}>
+          <div style={{
+            background: 'rgba(239, 68, 68, 0.2)',
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '1.2rem',
+            boxShadow: '0 0 10px rgba(239, 68, 68, 0.3)',
+            border: '1px solid rgba(239, 68, 68, 0.5)'
+          }}>⚠️</div>
+          <div style={{ flex: 1 }}>
+            <h4 style={{ margin: 0, fontWeight: 700, fontSize: '0.95rem', color: '#fca5a5' }}>¡Alerta de Vencimiento de Membresía!</h4>
+            <p style={{ margin: '3px 0 0', fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)' }}>
+              Hay <strong>{membresiasCriticas.length}</strong> membresía(s) de socios que vencerán en los próximos 3 días. Por favor, toma acción para su renovación.
+            </p>
+          </div>
+          <button 
+            onClick={() => {
+              const el = document.getElementById('vencimientos-section');
+              if (el) el.scrollIntoView({ behavior: 'smooth' });
+            }}
+            style={{
+              background: 'rgba(255,255,255,0.08)',
+              border: '1px solid rgba(255,255,255,0.15)',
+              color: '#fff',
+              padding: '0.5rem 1rem',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              fontWeight: 600,
+              fontSize: '0.8rem'
+            }}
+          >
+            Ver Detalles
+          </button>
+        </div>
+      )}
 
       {canSeeMetrics && (
         <div className={styles.statsGrid}>
           <div className={`${styles.statCard} glass`}>
             <div className={styles.cardHeader}><div className={`${styles.cardIcon} ${styles.blueIcon}`}><Users size={22} color="#fff" /></div></div>
-            <div className={styles.cardBody}><p className={styles.cardLabel}>Total Socios</p><h2 className={styles.cardValue}>248</h2></div>
+            <div className={styles.cardBody}>
+              <p className={styles.cardLabel}>Total Socios</p>
+              <h2 className={styles.cardValue}>{totalSociosCount !== null ? totalSociosCount : '...'}</h2>
+            </div>
           </div>
           <div className={`${styles.statCard} glass`}>
             <div className={styles.cardHeader}><div className={`${styles.cardIcon} ${styles.purpleIcon}`}><CreditCard size={22} color="#fff" /></div></div>
-            <div className={styles.cardBody}><p className={styles.cardLabel}>Membresías Activas</p><h2 className={styles.cardValue}>193</h2></div>
+            <div className={styles.cardBody}>
+              <p className={styles.cardLabel}>Membresías Activas</p>
+              <h2 className={styles.cardValue}>{activasCount !== null ? activasCount : '...'}</h2>
+            </div>
           </div>
           <div className={`${styles.statCard} glass`}>
             <div className={styles.cardHeader}><div className={`${styles.cardIcon} ${styles.cyanIcon}`}><BarChart3 size={22} color="#fff" /></div></div>
@@ -179,23 +279,42 @@ export default function DashboardPage() {
         )}
 
         {canSeeMetrics ? (
-          <div className={`${styles.expiringCard} glass`}>
+          <div id="vencimientos-section" className={`${styles.expiringCard} glass`}>
             <h3 className={styles.sectionTitle}>Membresías por Vencer</h3>
             <div className={styles.memberList}>
-              <div className={styles.memberItem}>
-                <div className={styles.memberInfo}>
-                  <div className={`${styles.memberAvatar} ${styles.avatarPurple}`}>CM</div>
-                  <div><p className={styles.memberName}>Carlos Mendoza</p><span className={`${styles.tag} ${styles.tagPurple}`}>Premium</span></div>
-                </div>
-                <span className={styles.timeLeft}>3d</span>
-              </div>
-              <div className={styles.memberItem}>
-                <div className={styles.memberInfo}>
-                  <div className={`${styles.memberAvatar} ${styles.avatarCyan}`}>AG</div>
-                  <div><p className={styles.memberName}>Ana García</p><span className={`${styles.tag} ${styles.tagCyan}`}>Básico</span></div>
-                </div>
-                <span className={styles.timeLeft}>7d</span>
-              </div>
+              {cargando ? (
+                <p style={{ color:'rgba(255,255,255,0.4)', padding:'1rem', textAlign:'center' }}>Cargando membresías...</p>
+              ) : membresiasVencer.length === 0 ? (
+                <p style={{ color:'rgba(255,255,255,0.4)', padding:'1rem', textAlign:'center', fontSize:'0.9rem' }}>No hay membresías por vencer próximamente.</p>
+              ) : (
+                membresiasVencer.map(m => {
+                  const hoy = new Date();
+                  hoy.setHours(0,0,0,0);
+                  const fin = new Date(m.fecha_fin);
+                  fin.setHours(0,0,0,0);
+                  const diasRestantes = Math.ceil((fin.getTime() - hoy.getTime()) / (1000 * 60 * 60 * 24));
+                  const esCritico = diasRestantes <= 3;
+                  
+                  return (
+                    <div key={m.id_membresia} className={styles.memberItem}>
+                      <div className={styles.memberInfo}>
+                        <div className={`${styles.memberAvatar} ${esCritico ? styles.avatarPurple : styles.avatarCyan}`}>
+                          {m.socio?.usuario?.nombre?.substring(0,2).toUpperCase() || 'S'}
+                        </div>
+                        <div>
+                          <p className={styles.memberName}>{m.socio?.usuario?.nombre || 'Socio'}</p>
+                          <span className={`${styles.tag} ${esCritico ? styles.tagPurple : styles.tagCyan}`}>
+                            {m.plan?.nombre || 'Membresía'}
+                          </span>
+                        </div>
+                      </div>
+                      <span className={styles.timeLeft} style={{ color: esCritico ? '#ef4444' : '#eab308' }}>
+                        {diasRestantes <= 0 ? 'Vence hoy' : `${diasRestantes}d`}
+                      </span>
+                    </div>
+                  );
+                })
+              )}
             </div>
           </div>
         ) : (
