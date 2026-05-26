@@ -434,7 +434,7 @@ export default function RutinasPage() {
 
             <form onSubmit={handleCrearRutina} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
 
-              /* Nombre 
+              {/* Nombre */}
               <div>
                 <label style={labelStyle}>Nombre de la Rutina *</label>
                 <input
@@ -444,7 +444,7 @@ export default function RutinasPage() {
                 />
               </div>
 
-              /* Descripción 
+              {/* Descripción */}
               <div>
                 <label style={labelStyle}>Descripción</label>
                 <textarea
@@ -455,7 +455,7 @@ export default function RutinasPage() {
                 />
               </div>
 
-              /* Nivel + Objetivo 
+              {/* Nivel + Objetivo */}
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                 <div>
                   <label style={labelStyle}>Nivel</label>
@@ -477,7 +477,7 @@ export default function RutinasPage() {
                 </div>
               </div>
 
-              /* ── Sección Ejercicios 
+              {/* ── Sección Ejercicios ── */}
               <div style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: '14px', overflow: 'hidden' }}>
                 <div style={{ background: 'rgba(0,242,255,0.06)', padding: '0.85rem 1.2rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Dumbbell size={16} color="var(--primary)" />
@@ -486,7 +486,7 @@ export default function RutinasPage() {
                 </div>
 
                 <div style={{ padding: '1rem 1.2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                  /* Selector agregar ejercicio 
+                  {/* Selector agregar ejercicio */}
                   <div style={{ display: 'flex', gap: '8px' }}>
                     <select
                       value={ejercicioSelId}
@@ -526,7 +526,7 @@ export default function RutinasPage() {
                             </button>
                           </div>
 
-                          /* Series / Reps / Descanso 
+                          {/* Series / Reps / Descanso */}
                           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
                             <div>
                               <label style={labelStyle}>Series</label>
@@ -554,7 +554,7 @@ export default function RutinasPage() {
                             </div>
                           </div>
 
-                          /* Observaciones técnicas
+                          {/* Observaciones técnicas */}
                           <div>
                             <label style={labelStyle}>Observaciones técnicas</label>
                             <input
@@ -570,7 +570,7 @@ export default function RutinasPage() {
                 </div>
               </div>
 
-              /* Botón guardar 
+              {/* Botón guardar */}
               <button
                 disabled={formLoading} type="submit"
                 style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))', color: '#000', padding: '1rem', borderRadius: '12px', border: 'none', fontWeight: 800, cursor: formLoading ? 'not-allowed' : 'pointer', opacity: formLoading ? 0.6 : 1, fontSize: '0.95rem' }}
@@ -583,7 +583,7 @@ export default function RutinasPage() {
       )}
 
       
-          MODAL: ASIGNAR RUTINA A SOCIO
+          {/* MODAL: ASIGNAR RUTINA A SOCIO */}
       
       {modalAsignar && (
         <div

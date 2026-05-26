@@ -234,6 +234,8 @@ export interface ConvertirProspectoPayload {
   identificacion: string;
   correo: string;
   password: string;
+  direccion?: string;
+  datos_salud?: string;
 }
 
 export const prospectosApi = {

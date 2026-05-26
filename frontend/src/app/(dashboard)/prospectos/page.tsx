@@ -17,7 +17,7 @@ export default function ProspectosPage() {
   
   const [modalConvertir, setModalConvertir] = useState(false);
   const [prospectoSel, setProspectoSel] = useState<Prospecto | null>(null);
-  const [convertirProps, setConvertirProps] = useState({ identificacion: '', correo: '', password: '' });
+  const [convertirProps, setConvertirProps] = useState({ identificacion: '', correo: '', password: '', direccion: '', datos_salud: '' });
   
   const [registrando, setRegistrando] = useState(false);
 
@@ -59,7 +59,7 @@ export default function ProspectosPage() {
       await prospectosApi.convertir(prospectoSel.id_prospecto, convertirProps);
       setModalConvertir(false);
       setProspectoSel(null);
-      setConvertirProps({ identificacion: '', correo: '', password: '' });
+      setConvertirProps({ identificacion: '', correo: '', password: '', direccion: '', datos_salud: '' });
       cargarProspectos();
       alert('Prospecto convertido a socio exitosamente');
     } catch (e: any) {
@@ -242,6 +242,14 @@ export default function ProspectosPage() {
               <div>
                 <label style={{ display:'block', fontSize:'0.8rem', color:'rgba(255,255,255,0.4)', marginBottom:'8px' }}>Contraseña Temporal *</label>
                 <input required type="password" value={convertirProps.password} onChange={e=>setConvertirProps({...convertirProps, password: e.target.value})} style={{ width:'100%', background:'rgba(0,0,0,0.3)', border:'1px solid rgba(255,255,255,0.1)', padding:'0.8rem', borderRadius:'10px', color:'#fff', outline:'none' }} />
+              </div>
+              <div>
+                <label style={{ display:'block', fontSize:'0.8rem', color:'rgba(255,255,255,0.4)', marginBottom:'8px' }}>Dirección de Residencia</label>
+                <input type="text" value={convertirProps.direccion} onChange={e=>setConvertirProps({...convertirProps, direccion: e.target.value})} placeholder="Ej: Calle 45 # 12-34" style={{ width:'100%', background:'rgba(0,0,0,0.3)', border:'1px solid rgba(255,255,255,0.1)', padding:'0.8rem', borderRadius:'10px', color:'#fff', outline:'none' }} />
+              </div>
+              <div>
+                <label style={{ display:'block', fontSize:'0.8rem', color:'rgba(255,255,255,0.4)', marginBottom:'8px' }}>Datos de Salud / Observaciones Médicas</label>
+                <input type="text" value={convertirProps.datos_salud} onChange={e=>setConvertirProps({...convertirProps, datos_salud: e.target.value})} placeholder="Ej: Hipertensión, asma, etc." style={{ width:'100%', background:'rgba(0,0,0,0.3)', border:'1px solid rgba(255,255,255,0.1)', padding:'0.8rem', borderRadius:'10px', color:'#fff', outline:'none' }} />
               </div>
               <div style={{ display:'flex', gap:'10px', marginTop:'1rem' }}>
                 <button type="button" onClick={() => setModalConvertir(false)} style={{ flex:1, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'#fff', padding:'0.8rem', borderRadius:'10px', cursor:'pointer' }}>Cancelar</button>

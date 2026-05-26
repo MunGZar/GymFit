@@ -323,7 +323,7 @@ export default function DashboardPage() {
             
             {role === 'socio' && miProgreso.length > 0 ? (
               <div style={{ background:'rgba(255,255,255,0.05)', padding:'1rem', borderRadius:'12px' }}>
-                <p style={{ fontSize:'0.9rem', marginBottom:'0.5rem', color:'rgba(255,255,255,0.7)' }}>Progreso de Peso (HU-10)</p>
+                <p style={{ fontSize:'0.9rem', marginBottom:'0.5rem', color:'rgba(255,255,255,0.7)' }}>Progreso de Peso</p>
                 <div style={{ display:'flex', alignItems:'flex-end', gap:'5px', height:'60px' }}>
                   {miProgreso.slice(-5).map((p, i) => (
                     <div key={i} style={{ flex:1, background:'var(--primary)', height:`${(Number(p.peso || 0)/150)*100}%`, borderRadius:'4px 4px 0 0', opacity: 0.5 + (i*0.1) }}></div>
