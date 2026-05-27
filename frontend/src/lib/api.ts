@@ -500,7 +500,7 @@ export const progresoApi = {
   },
 };
 
-//  Ejercicios API (HU-11) 
+//  Ejercicios API (catálogo general)
 
 export interface Ejercicio {
   id_ejercicio: number;
@@ -526,15 +526,28 @@ export const ejerciciosApi = {
     });
     return handleResponse<Ejercicio>(res);
   },
+  async update(id: number, payload: Partial<CreateEjercicioPayload>): Promise<Ejercicio> {
+    const res = await fetch(`${BASE_URL}/ejercicios/${id}`, {
+      method: 'PUT', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<Ejercicio>(res);
+  },
+  async remove(id: number): Promise<void> {
+    const res = await fetch(`${BASE_URL}/ejercicios/${id}`, {
+      method: 'DELETE', headers: buildHeaders(),
+    });
+    return handleResponse<void>(res);
+  },
 };
 
-//  Rutinas API (HU-11) 
+//  Rutinas API (HU-11)
 
 export interface RutinaEjercicioItem {
   id: number;
   series: number | null;
   repeticiones: number | null;
   descanso: number | null; // en segundos
+  observaciones: string | null;
   ejercicio: Ejercicio;
 }
 
@@ -559,6 +572,21 @@ export interface CreateRutinaPayload {
     descanso?: number;
     observaciones?: string;
   }[];
+}
+
+export interface AgregarEjercicioPayload {
+  id_ejercicio: number;
+  series?: number;
+  repeticiones?: number;
+  descanso?: number;
+  observaciones?: string;
+}
+
+export interface UpdateRutinaEjercicioPayload {
+  series?: number;
+  repeticiones?: number;
+  descanso?: number;
+  observaciones?: string;
 }
 
 export interface AsignacionRutina {
@@ -595,6 +623,32 @@ export const rutinasApi = {
     });
     return handleResponse<void>(res);
   },
+
+  // ── Gestión de ejercicios dentro de una rutina existente ──
+  async agregarEjercicio(idRutina: number, payload: AgregarEjercicioPayload): Promise<RutinaEjercicioItem> {
+    const res = await fetch(`${BASE_URL}/rutinas/${idRutina}/ejercicios`, {
+      method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<RutinaEjercicioItem>(res);
+  },
+  async actualizarEjercicio(
+    idRutina: number,
+    reId: number,
+    payload: UpdateRutinaEjercicioPayload,
+  ): Promise<RutinaEjercicioItem> {
+    const res = await fetch(`${BASE_URL}/rutinas/${idRutina}/ejercicios/${reId}`, {
+      method: 'PATCH', headers: buildHeaders(), body: JSON.stringify(payload),
+    });
+    return handleResponse<RutinaEjercicioItem>(res);
+  },
+  async quitarEjercicio(idRutina: number, reId: number): Promise<void> {
+    const res = await fetch(`${BASE_URL}/rutinas/${idRutina}/ejercicios/${reId}`, {
+      method: 'DELETE', headers: buildHeaders(),
+    });
+    return handleResponse<void>(res);
+  },
+
+  // ── Asignaciones rutina → socio ──
   async asignar(payload: { id_socio: number; id_rutina: number; fecha_asignacion: string }): Promise<void> {
     const res = await fetch(`${BASE_URL}/rutinas/asignaciones`, {
       method: 'POST', headers: buildHeaders(), body: JSON.stringify(payload),
@@ -604,5 +658,11 @@ export const rutinasApi = {
   async findAsignacionesBySocio(idSocio: number): Promise<AsignacionRutina[]> {
     const res = await fetch(`${BASE_URL}/rutinas/asignaciones/socio/${idSocio}`, { headers: buildHeaders() });
     return handleResponse<AsignacionRutina[]>(res);
+  },
+  async removeAsignacion(id: number): Promise<void> {
+    const res = await fetch(`${BASE_URL}/rutinas/asignaciones/${id}`, {
+      method: 'DELETE', headers: buildHeaders(),
+    });
+    return handleResponse<void>(res);
   },
 };
