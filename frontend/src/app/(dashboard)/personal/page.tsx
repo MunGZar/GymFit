@@ -173,8 +173,8 @@ export default function PersonalPage() {
     } catch (err: unknown) { alert(err instanceof Error ? err.message : 'Error al reactivar.'); }
   };
 
-  const inputStyle: React.CSSProperties = { width:'100%', background:'rgba(0,0,0,0.25)', border:'1px solid rgba(255,255,255,0.12)', borderRadius:'10px', padding:'0.75rem 1rem', color:'#fff', fontSize:'0.9rem', outline:'none' };
-  const labelStyle: React.CSSProperties = { display:'block', fontSize:'0.78rem', fontWeight:600, color:'rgba(255,255,255,0.5)', marginBottom:'5px', textTransform:'uppercase', letterSpacing:'0.04em' };
+  const inputStyle: React.CSSProperties = { width:'100%', background:'var(--surface-input)', border:'1px solid var(--surface-border)', borderRadius:'10px', padding:'0.75rem 1rem', color:'var(--text-main)', fontSize:'0.9rem', outline:'none' };
+  const labelStyle: React.CSSProperties = { display:'block', fontSize:'0.78rem', fontWeight:600, color:'var(--text-muted)', marginBottom:'5px', textTransform:'uppercase', letterSpacing:'0.04em' };
 
   return (
     <div className={styles.container}>
@@ -183,10 +183,10 @@ export default function PersonalPage() {
           <h2 className={styles.sectionTitle} style={{ display:'flex', alignItems:'center', gap:'10px', marginBottom:'0.4rem' }}>
             <Shield size={22} color="var(--primary)" /> Gestión de Personal
           </h2>
-          <p style={{ color:'rgba(255,255,255,0.5)', fontSize:'0.9rem' }}>Administra los usuarios, roles y asignaciones del gimnasio.</p>
+          <p style={{ color:'var(--text-muted)', fontSize:'0.9rem' }}>Administra los usuarios, roles y asignaciones del gimnasio.</p>
         </div>
         <div style={{ display:'flex', gap:'8px' }}>
-          <button onClick={cargarDatos} title="Recargar" style={{ background:'rgba(255,255,255,0.06)', border:'1px solid rgba(255,255,255,0.1)', borderRadius:'10px', padding:'0.7rem', color:'rgba(255,255,255,0.6)', cursor:'pointer', display:'flex', alignItems:'center' }}><RefreshCw size={16}/></button>
+          <button onClick={cargarDatos} title="Recargar" style={{ background:'var(--btn-secondary-bg)', border:'1px solid var(--btn-secondary-border)', borderRadius:'10px', padding:'0.7rem', color:'var(--btn-secondary-text)', cursor:'pointer', display:'flex', alignItems:'center' }}><RefreshCw size={16}/></button>
           {tab === 'usuarios' && (
             <button onClick={abrirCrear} style={{ background:'linear-gradient(135deg, var(--primary), var(--secondary))', color:'#000', border:'none', padding:'0.75rem 1.4rem', borderRadius:'12px', fontWeight:700, display:'flex', alignItems:'center', gap:'8px', cursor:'pointer', fontSize:'0.9rem' }}><Plus size={18}/> Nuevo Usuario</button>
           )}
@@ -194,16 +194,16 @@ export default function PersonalPage() {
       </div>
 
       {/* Tabs */}
-      <div style={{ display:'flex', gap:'1rem', marginBottom:'1.5rem', borderBottom:'1px solid rgba(255,255,255,0.05)', paddingBottom:'0.5rem' }}>
-        <button onClick={() => setTab('usuarios')} style={{ background:'transparent', border:'none', borderBottom:tab==='usuarios'?'2px solid var(--primary)':'none', color:tab==='usuarios'?'#fff':'rgba(255,255,255,0.5)', padding:'0.5rem 1rem', cursor:'pointer', fontWeight:600 }}>Usuarios</button>
-        <button onClick={() => setTab('asignaciones')} style={{ background:'transparent', border:'none', borderBottom:tab==='asignaciones'?'2px solid var(--primary)':'none', color:tab==='asignaciones'?'#fff':'rgba(255,255,255,0.5)', padding:'0.5rem 1rem', cursor:'pointer', fontWeight:600 }}>Asignación de Entrenadores</button>
+      <div style={{ display:'flex', gap:'1rem', marginBottom:'1.5rem', borderBottom:'1px solid var(--table-border)', paddingBottom:'0.5rem' }}>
+        <button onClick={() => setTab('usuarios')} style={{ background:'transparent', border:'none', borderBottom:tab==='usuarios'?'2px solid var(--primary)':'none', color:tab==='usuarios'?'var(--text-main)':'var(--text-muted)', padding:'0.5rem 1rem', cursor:'pointer', fontWeight:600 }}>Usuarios</button>
+        <button onClick={() => setTab('asignaciones')} style={{ background:'transparent', border:'none', borderBottom:tab==='asignaciones'?'2px solid var(--primary)':'none', color:tab==='asignaciones'?'var(--text-main)':'var(--text-muted)', padding:'0.5rem 1rem', cursor:'pointer', fontWeight:600 }}>Asignación de Entrenadores</button>
       </div>
 
       {tab === 'usuarios' ? (
         <>
           <div className="glass" style={{ padding:'1rem 1.5rem', borderRadius:'16px', display:'flex', gap:'1rem', alignItems:'center', flexWrap:'wrap', marginBottom:'1rem' }}>
             <div style={{ position:'relative', flex:1, minWidth:'220px', maxWidth:'400px' }}>
-              <Search size={16} style={{ position:'absolute', left:'0.9rem', top:'50%', transform:'translateY(-50%)', color:'rgba(255,255,255,0.35)' }}/>
+              <Search size={16} style={{ position:'absolute', left:'0.9rem', top:'50%', transform:'translateY(-50%)', color:'var(--text-faint)' }}/>
               <input type="text" placeholder="Buscar por nombre, email o ID…" value={busqueda} onChange={e=>setBusqueda(e.target.value)} style={{ ...inputStyle, paddingLeft:'2.5rem' }}/>
             </div>
             <select value={filtroRol} onChange={e=>setFiltroRol(e.target.value)} style={{ ...inputStyle, width:'auto', minWidth:'170px' }}>
@@ -214,17 +214,17 @@ export default function PersonalPage() {
 
           <div className="glass" style={{ borderRadius:'16px', overflow:'hidden', padding:0 }}>
             {cargando ? (
-              <div style={{ padding:'3rem', textAlign:'center', color:'rgba(255,255,255,0.4)' }}>
+              <div style={{ padding:'3rem', textAlign:'center', color:'var(--text-faint)' }}>
                 <RefreshCw size={20} style={{ animation:'spin 1s linear infinite', marginBottom:'0.5rem' }}/><p>Cargando usuarios…</p>
               </div>
             ) : usuariosFiltrados.length === 0 ? (
-              <div style={{ padding:'3rem', textAlign:'center', color:'rgba(255,255,255,0.4)' }}><Shield size={32} style={{ marginBottom:'0.5rem', opacity:0.3 }}/><p>No se encontraron usuarios.</p></div>
+              <div style={{ padding:'3rem', textAlign:'center', color:'var(--text-faint)' }}><Shield size={32} style={{ marginBottom:'0.5rem', opacity:0.3 }}/><p>No se encontraron usuarios.</p></div>
             ) : (
               <table style={{ width:'100%', borderCollapse:'collapse', textAlign:'left' }}>
                 <thead>
-                  <tr style={{ borderBottom:'1px solid rgba(255,255,255,0.08)', background:'rgba(255,255,255,0.02)' }}>
+                  <tr style={{ borderBottom:'1px solid var(--table-border)', background:'var(--table-header-bg)' }}>
                     {['USUARIO','IDENTIFICACIÓN','ROL','TELÉFONO','ESTADO','ACCIONES'].map(h=>(
-                      <th key={h} style={{ padding:'1rem 1.25rem', color:'rgba(255,255,255,0.4)', fontWeight:600, fontSize:'0.78rem', letterSpacing:'0.05em', textAlign:h==='ACCIONES'?'right':'left' }}>{h}</th>
+                      <th key={h} style={{ padding:'1rem 1.25rem', color:'var(--table-header-text)', fontWeight:600, fontSize:'0.78rem', letterSpacing:'0.05em', textAlign:h==='ACCIONES'?'right':'left' }}>{h}</th>
                     ))}
                   </tr>
                 </thead>
@@ -232,23 +232,23 @@ export default function PersonalPage() {
                   {usuariosFiltrados.map((u) => {
                     const meta = getRolMeta(u.rol.nombre);
                     return (
-                      <tr key={u.id_usuario} style={{ borderBottom:'1px solid rgba(255,255,255,0.04)', opacity: u.estado ? 1 : 0.65 }}>
+                      <tr key={u.id_usuario} style={{ borderBottom:'1px solid var(--table-row-border)', opacity: u.estado ? 1 : 0.65 }}>
                         <td style={{ padding:'0.9rem 1.25rem' }}>
                           <div className={styles.memberInfo}>
                             <div className={`${styles.memberAvatar} ${meta.avatar}`}>{iniciales(u.nombre)}</div>
-                            <div><p className={styles.memberName}>{u.nombre}</p><span style={{ fontSize:'0.78rem', color:'rgba(255,255,255,0.4)' }}>{u.correo}</span></div>
+                            <div><p className={styles.memberName}>{u.nombre}</p><span style={{ fontSize:'0.78rem', color:'var(--text-faint)' }}>{u.correo}</span></div>
                           </div>
                         </td>
-                        <td style={{ padding:'0.9rem 1.25rem', fontSize:'0.85rem', color:'rgba(255,255,255,0.6)' }}>{u.identificacion}</td>
+                        <td style={{ padding:'0.9rem 1.25rem', fontSize:'0.85rem', color:'var(--text-muted)' }}>{u.identificacion}</td>
                         <td style={{ padding:'0.9rem 1.25rem' }}><span className={meta.tag}>{u.rol.nombre.charAt(0).toUpperCase()+u.rol.nombre.slice(1)}</span></td>
-                        <td style={{ padding:'0.9rem 1.25rem', fontSize:'0.85rem', color:'rgba(255,255,255,0.5)' }}>{u.telefono??'—'}</td>
+                        <td style={{ padding:'0.9rem 1.25rem', fontSize:'0.85rem', color:'var(--text-muted)' }}>{u.telefono??'—'}</td>
                         <td style={{ padding:'0.9rem 1.25rem' }}>
                           <span style={{ display:'inline-block', padding:'0.25rem 0.75rem', borderRadius:'20px', fontSize:'0.78rem', fontWeight:600, background:u.estado?'rgba(34,197,94,0.12)':'rgba(239,68,68,0.12)', color:u.estado?'#4ade80':'#f87171' }}>
                             {u.estado ? 'Activo' : 'Inactivo'}
                           </span>
                         </td>
                         <td style={{ padding:'0.9rem 1.25rem', textAlign:'right' }}>
-                          <button onClick={()=>abrirEditar(u)} title="Editar" style={{ background:'transparent', border:'none', color:'rgba(255,255,255,0.45)', cursor:'pointer', padding:'4px 6px' }}><Edit2 size={15}/></button>
+                          <button onClick={()=>abrirEditar(u)} title="Editar" style={{ background:'transparent', border:'none', color:'var(--text-faint)', cursor:'pointer', padding:'4px 6px' }}><Edit2 size={15}/></button>
                           {u.estado ? (
                             <button onClick={()=>handleDesactivar(u)} title="Desactivar" style={{ background:'transparent', border:'none', color:'#ef4444', cursor:'pointer', padding:'4px 6px' }}><Trash2 size={15}/></button>
                           ) : (
@@ -274,15 +274,15 @@ export default function PersonalPage() {
                   onClick={() => setIdEntrenadorSel(e.id_entrenador.toString())}
                   style={{ 
                     width:'100%', padding:'1rem', borderRadius:'12px', textAlign:'left', cursor:'pointer',
-                    background: idEntrenadorSel === e.id_entrenador.toString() ? 'rgba(0,242,255,0.15)' : 'rgba(255,255,255,0.03)',
-                    border: idEntrenadorSel === e.id_entrenador.toString() ? '1px solid var(--primary)' : '1px solid rgba(255,255,255,0.08)',
-                    color: '#fff', display:'flex', alignItems:'center', gap:'10px'
+                    background: idEntrenadorSel === e.id_entrenador.toString() ? 'var(--primary-glow)' : 'var(--subtle-bg)',
+                    border: idEntrenadorSel === e.id_entrenador.toString() ? '1px solid var(--primary)' : '1px solid var(--surface-border)',
+                    color: 'var(--text-main)', display:'flex', alignItems:'center', gap:'10px'
                   }}
                 >
                   <div style={{ width:'32px', height:'32px', borderRadius:'50%', background:'var(--primary)', color:'#000', display:'flex', alignItems:'center', justifyContent:'center', fontWeight:700, fontSize:'0.75rem' }}>{iniciales(e.usuario.nombre)}</div>
                   <div>
                     <p style={{ fontWeight:600, fontSize:'0.9rem' }}>{e.usuario.nombre}</p>
-                    <p style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.4)' }}>{e.especialidad || 'Sin especialidad'}</p>
+                    <p style={{ fontSize:'0.75rem', color:'var(--text-faint)' }}>{e.especialidad || 'Sin especialidad'}</p>
                   </div>
                 </button>
               ))}
@@ -291,7 +291,7 @@ export default function PersonalPage() {
 
           <div className="glass" style={{ padding:'1.5rem', borderRadius:'16px' }}>
             {!idEntrenadorSel ? (
-              <div style={{ height:'300px', display:'flex', alignItems:'center', justifyContent:'center', color:'rgba(255,255,255,0.3)', flexDirection:'column', gap:'10px' }}>
+              <div style={{ height:'300px', display:'flex', alignItems:'center', justifyContent:'center', color:'var(--text-faint)', flexDirection:'column', gap:'10px' }}>
                 <Users size={48} style={{ opacity:0.2 }}/>
                 <p>Selecciona un entrenador para ver sus socios asignados.</p>
               </div>
@@ -303,15 +303,15 @@ export default function PersonalPage() {
                 </div>
                 
                 {asignacionesCargando ? <p>Cargando asignaciones…</p> : asignacionesList.length === 0 ? (
-                  <p style={{ color:'rgba(255,255,255,0.4)', textAlign:'center', padding:'2rem' }}>Este entrenador no tiene socios asignados.</p>
+                  <p style={{ color:'var(--text-muted)', textAlign:'center', padding:'2rem' }}>Este entrenador no tiene socios asignados.</p>
                 ) : (
                   <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(200px, 1fr))', gap:'1rem' }}>
                     {asignacionesList.map(a => (
-                      <div key={a.id_asignacion} style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'12px', padding:'1rem', display:'flex', alignItems:'center', gap:'10px' }}>
-                        <div style={{ width:'40px', height:'40px', borderRadius:'50%', background:'rgba(255,255,255,0.1)', display:'flex', alignItems:'center', justifyContent:'center' }}><Users size={20}/></div>
+                      <div key={a.id_asignacion} style={{ background:'var(--subtle-bg)', border:'1px solid var(--surface-border)', borderRadius:'12px', padding:'1rem', display:'flex', alignItems:'center', gap:'10px' }}>
+                        <div style={{ width:'40px', height:'40px', borderRadius:'50%', background:'var(--surface-hover)', display:'flex', alignItems:'center', justifyContent:'center' }}><Users size={20}/></div>
                         <div>
                           <p style={{ fontWeight:600, fontSize:'0.9rem' }}>{a.socio.usuario.nombre}</p>
-                          <p style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.4)' }}>Desde: {a.fecha_asignacion}</p>
+                          <p style={{ fontSize:'0.75rem', color:'var(--text-faint)' }}>Desde: {a.fecha_asignacion}</p>
                         </div>
                       </div>
                     ))}
@@ -324,7 +324,7 @@ export default function PersonalPage() {
       )}
 
       {modalAbierto && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.65)', backdropFilter:'blur(6px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={() => cerrarModal()}>
+        <div style={{ position:'fixed', inset:0, background:'var(--modal-overlay)', backdropFilter:'blur(6px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={() => cerrarModal()}>
           <div className="glass" style={{ width:'100%', maxWidth:'520px', borderRadius:'20px', padding:'2rem', maxHeight:'90vh', overflowY:'auto' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ fontSize:'1.1rem', fontWeight:700, marginBottom:'1.5rem' }}>{modalMode==='crear'?'Nuevo Usuario':'Editar Usuario'}</h3>
             <form onSubmit={handleGuardar} style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
@@ -347,7 +347,7 @@ export default function PersonalPage() {
 
       {/* Modal Asignar  */}
       {modalAsignar && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.65)', backdropFilter:'blur(6px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={()=>setModalAsignar(false)}>
+        <div style={{ position:'fixed', inset:0, background:'var(--modal-overlay)', backdropFilter:'blur(6px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={()=>setModalAsignar(false)}>
           <div className="glass" style={{ width:'100%', maxWidth:'400px', borderRadius:'20px', padding:'2rem' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ fontSize:'1.1rem', fontWeight:700, marginBottom:'1.5rem' }}>Asignar Entrenador</h3>
             <form onSubmit={handleAsignar} style={{ display:'flex', flexDirection:'column', gap:'1.2rem' }}>
@@ -369,7 +369,7 @@ export default function PersonalPage() {
                   ))}
                 </select>
               </div>
-              <p style={{ fontSize:'0.8rem', color:'rgba(255,255,255,0.4)' }}><Calendar size={12}/> Se registrará con fecha de hoy.</p>
+              <p style={{ fontSize:'0.8rem', color:'var(--text-faint)' }}><Calendar size={12}/> Se registrará con fecha de hoy.</p>
               <button type="submit" disabled={formLoading} style={{ background:'var(--primary)', color:'#000', padding:'1rem', borderRadius:'12px', border:'none', fontWeight:700, cursor:'pointer', opacity: formLoading ? 0.6 : 1 }}>
                 {formLoading ? 'Asignando...' : 'Confirmar Asignación'}
               </button>

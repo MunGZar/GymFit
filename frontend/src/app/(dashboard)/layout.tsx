@@ -10,6 +10,7 @@ import {
   LayoutDashboard, Users, CreditCard, Dumbbell, Calendar,
   Package, BarChart3, Settings, LogOut, Bell, Menu,
   UserPlus, ClipboardList, ShieldCheck, UserCircle,
+  Sun, Moon
 } from 'lucide-react';
 import { hasPermission } from '@/lib/rbac';
 
@@ -36,6 +37,31 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { usuario, logout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isLightMode, setIsLightMode] = useState(false);
+
+  // Inicializar estado de tema
+  React.useEffect(() => {
+    const tema = localStorage.getItem('gymfit_theme');
+    if (tema === 'light') {
+      setIsLightMode(true);
+      document.body.classList.add('light-theme');
+    } else {
+      setIsLightMode(false);
+      document.body.classList.remove('light-theme');
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    const nextTheme = !isLightMode;
+    setIsLightMode(nextTheme);
+    if (nextTheme) {
+      document.body.classList.add('light-theme');
+      localStorage.setItem('gymfit_theme', 'light');
+    } else {
+      document.body.classList.remove('light-theme');
+      localStorage.setItem('gymfit_theme', 'dark');
+    }
+  };
 
   // Filtrar items según rol
   const filteredNavItems = navItems.filter(item => 
@@ -54,7 +80,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
     <div className={styles.wrapper}>
       <div className={styles.backgroundContainer}>
         <Image src="/assets/login-bg.png" alt="Gym Background" fill
-          style={{ objectFit: 'cover', opacity: 0.15 }} priority />
+          style={{ objectFit: 'cover', opacity: 'var(--bg-image-opacity)' as any }} priority />
         <div className={styles.overlay} />
       </div>
 
@@ -86,7 +112,7 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
           {/* Enlace al perfil propio — HU-03 */}
           <button
             onClick={() => { router.push('/perfil'); setIsMobileMenuOpen(false); }}
-            style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', background: 'transparent', border: 'none', color: 'rgba(255,255,255,0.55)', cursor: 'pointer', padding: '0.6rem 0.5rem', borderRadius: '10px', fontSize: '0.9rem', marginBottom: '4px' }}
+            style={{ display: 'flex', alignItems: 'center', gap: '10px', width: '100%', background: 'transparent', border: 'none', color: 'var(--sidebar-footer-text)', cursor: 'pointer', padding: '0.6rem 0.5rem', borderRadius: '10px', fontSize: '0.9rem', marginBottom: '4px' }}
           >
             <UserCircle size={20} />
             <span>Mi perfil</span>
@@ -110,6 +136,9 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           <div className={styles.topActions}>
+            <button className={styles.iconBtn} onClick={toggleTheme} title={isLightMode ? 'Cambiar a modo oscuro' : 'Cambiar a modo claro'}>
+              {isLightMode ? <Moon size={20} /> : <Sun size={20} />}
+            </button>
             <button className={styles.iconBtn}><Bell size={20} /></button>
 
             {/* Avatar clickeable → navega a /perfil */}
@@ -117,8 +146,8 @@ function DashboardShell({ children }: { children: React.ReactNode }) {
               onClick={() => router.push('/perfil')}
               title={`${usuario?.nombre ?? ''} — Ver perfil`}
               style={{
-                width: 38, height: 38, borderRadius: '50%', border: '2px solid rgba(0,242,255,0.4)',
-                background: 'linear-gradient(135deg, rgba(0,242,255,0.2), rgba(176,38,255,0.2))',
+                width: 38, height: 38, borderRadius: '50%', border: '2px solid var(--avatar-border)',
+                background: 'var(--avatar-gradient)',
                 color: 'var(--primary)', fontWeight: 700, fontSize: '0.85rem',
                 cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
               }}

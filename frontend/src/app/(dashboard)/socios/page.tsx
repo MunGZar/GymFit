@@ -63,15 +63,15 @@ export default function SociosPage() {
 
   return (
     <div className={styles.container}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h2 className={styles.sectionTitle} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.5rem' }}>
             <Users size={24} color="var(--primary)" /> Gestión de Socios
           </h2>
-          <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>Administra los perfiles y estados de los miembros del gimnasio.</p>
+          <p style={{ color: 'var(--text-muted)' }}>Administra los perfiles y estados de los miembros del gimnasio.</p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button onClick={cargarSocios} style={{ background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', padding:'0.8rem', borderRadius:'10px', color:'#fff', cursor:'pointer' }}>
+          <button onClick={cargarSocios} style={{ background:'var(--btn-secondary-bg)', border:'1px solid var(--btn-secondary-border)', padding:'0.8rem', borderRadius:'10px', color:'var(--btn-secondary-text)', cursor:'pointer' }}>
             <RefreshCw size={20} className={cargando ? styles.spin : ''} />
           </button>
           <button onClick={() => setModalAbierto(true)} style={{ background: 'linear-gradient(135deg, var(--primary), var(--secondary))', color: '#000', border: 'none', padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
@@ -83,54 +83,54 @@ export default function SociosPage() {
       {error && (
         <div style={{ background:'rgba(239,68,68,0.1)', border:'1px solid rgba(239,68,68,0.3)', color:'#f87171', padding:'1rem', borderRadius:'12px', marginBottom:'1.5rem', display:'flex', justifyContent:'space-between', alignItems:'center' }}>
           <span><strong>Error:</strong> {error}</span>
-          <button onClick={cargarSocios} style={{ background:'transparent', border:'none', color:'#fff', cursor:'pointer', textDecoration:'underline', fontSize:'0.85rem' }}>Reintentar</button>
+          <button onClick={cargarSocios} style={{ background:'transparent', border:'none', color:'var(--text-main)', cursor:'pointer', textDecoration:'underline', fontSize:'0.85rem' }}>Reintentar</button>
         </div>
       )}
 
-      <div className="glass" style={{ padding: '1rem 1.5rem', borderRadius: '16px', display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem' }}>
+      <div className="glass" style={{ padding: '1rem 1.5rem', borderRadius: '16px', display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <div style={{ position: 'relative', flex: 1, maxWidth: '400px' }}>
-          <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.4)' }} />
+          <Search size={18} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-faint)' }} />
           <input 
             type="text" 
             placeholder="Buscar por nombre o email..." 
             value={busqueda}
             onChange={e => setBusqueda(e.target.value)}
-            style={{ width: '100%', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.8rem 1rem 0.8rem 2.8rem', borderRadius: '10px', color: '#fff', outline: 'none' }} 
+            style={{ width: '100%', background: 'var(--surface-input)', border: '1px solid var(--surface-border)', padding: '0.8rem 1rem 0.8rem 2.8rem', borderRadius: '10px', color: 'var(--text-main)', outline: 'none' }} 
           />
         </div>
       </div>
 
-      <div className="glass" style={{ padding: '0', borderRadius: '16px', overflow: 'hidden' }}>
+      <div className="glass" style={{ padding: '0', borderRadius: '16px', overflowX: 'auto' }}>
         {cargando ? (
-          <div style={{ padding:'3rem', textAlign:'center', color:'rgba(255,255,255,0.4)' }}>
+          <div style={{ padding:'3rem', textAlign:'center', color:'var(--text-faint)' }}>
             <RefreshCw size={24} style={{ animation: 'spin 1s linear infinite' }} />
             <p style={{ marginTop:'10px' }}>Cargando socios...</p>
           </div>
         ) : sociosFiltrados.length === 0 ? (
-          <p style={{ padding:'3rem', textAlign:'center', color:'rgba(255,255,255,0.4)' }}>No se encontraron socios registrados.</p>
+          <p style={{ padding:'3rem', textAlign:'center', color:'var(--text-faint)' }}>No se encontraron socios registrados.</p>
         ) : (
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
-              <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'rgba(255,255,255,0.02)' }}>
-                <th style={{ padding: '1.2rem 1.5rem', color: 'rgba(255,255,255,0.5)', fontWeight: '600', fontSize: '0.85rem' }}>SOCIO</th>
-                <th style={{ padding: '1.2rem 1.5rem', color: 'rgba(255,255,255,0.5)', fontWeight: '600', fontSize: '0.85rem' }}>IDENTIFICACIÓN</th>
-                <th style={{ padding: '1.2rem 1.5rem', color: 'rgba(255,255,255,0.5)', fontWeight: '600', fontSize: '0.85rem' }}>ESTADO</th>
-                <th style={{ padding: '1.2rem 1.5rem', color: 'rgba(255,255,255,0.5)', fontWeight: '600', fontSize: '0.85rem', textAlign: 'right' }}>ACCIONES</th>
+              <tr style={{ borderBottom: '1px solid var(--surface-border)', background: 'var(--table-header-bg)' }}>
+                <th style={{ padding: '1.2rem 1.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem' }}>SOCIO</th>
+                <th style={{ padding: '1.2rem 1.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem' }}>IDENTIFICACIÓN</th>
+                <th style={{ padding: '1.2rem 1.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem' }}>ESTADO</th>
+                <th style={{ padding: '1.2rem 1.5rem', color: 'var(--text-muted)', fontWeight: '600', fontSize: '0.85rem', textAlign: 'right' }}>ACCIONES</th>
               </tr>
             </thead>
             <tbody>
               {sociosFiltrados.map(s => (
-                <tr key={s.id_socio} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <tr key={s.id_socio} style={{ borderBottom: '1px solid var(--table-row-border)' }}>
                   <td style={{ padding: '1rem 1.5rem' }}>
                     <div className={styles.memberInfo}>
                       <div className={`${styles.memberAvatar} ${styles.avatarCyan}`}>{s.usuario?.nombre?.substring(0,2).toUpperCase() || 'S'}</div>
                       <div>
                         <p className={styles.memberName}>{s.usuario?.nombre || 'Socio'}</p>
-                        <span style={{ fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>{s.usuario?.correo}</span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-faint)' }}>{s.usuario?.correo}</span>
                       </div>
                     </div>
                   </td>
-                  <td style={{ padding: '1rem 1.5rem', color: 'rgba(255,255,255,0.7)', fontSize: '0.9rem' }}>{s.usuario?.identificacion}</td>
+                  <td style={{ padding: '1rem 1.5rem', color: 'var(--text-muted)', fontSize: '0.9rem' }}>{s.usuario?.identificacion}</td>
                   <td style={{ padding: '1rem 1.5rem' }}>
                     <span style={{ 
                       display: 'inline-block', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: '600',
@@ -157,19 +157,19 @@ export default function SociosPage() {
 
       {/* Modal Nuevo Socio */}
       {modalAbierto && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.6)', backdropFilter:'blur(4px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={() => setModalAbierto(false)}>
+        <div style={{ position:'fixed', inset:0, background:'var(--modal-overlay)', backdropFilter:'blur(4px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={() => setModalAbierto(false)}>
           <div className="glass" style={{ width:'100%', maxWidth:'450px', borderRadius:'20px', padding:'2rem' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ fontSize:'1.2rem', marginBottom:'1.5rem', fontWeight:700 }}>Completar Registro de Socio</h3>
-            <p style={{ fontSize:'0.9rem', color:'rgba(255,255,255,0.6)', marginBottom:'1.5rem' }}>
+            <p style={{ fontSize:'0.9rem', color:'var(--text-muted)', marginBottom:'1.5rem' }}>
               Selecciona un usuario con rol 'Socio' para activarlo en el sistema de gestión del gimnasio.
             </p>
             <form onSubmit={handleRegistrar} style={{ display:'flex', flexDirection:'column', gap:'1.2rem' }}>
               <div>
-                <label style={{ display:'block', fontSize:'0.8rem', color:'rgba(255,255,255,0.4)', marginBottom:'8px' }}>Usuarios con rol 'Socio'</label>
+                <label style={{ display:'block', fontSize:'0.8rem', color:'var(--text-muted)', marginBottom:'8px' }}>Usuarios con rol 'Socio'</label>
                 <select 
                   value={idUsuarioSel} 
                   onChange={e => setIdUsuarioSel(e.target.value)}
-                  style={{ width:'100%', background:'rgba(0,0,0,0.3)', border:'1px solid rgba(255,255,255,0.1)', padding:'0.8rem', borderRadius:'10px', color:'#fff', outline:'none' }}
+                  style={{ width:'100%', background:'var(--surface-input)', border:'1px solid var(--surface-border)', padding:'0.8rem', borderRadius:'10px', color:'var(--text-main)', outline:'none' }}
                 >
                   <option value="">Selecciona un usuario...</option>
                   {usuariosDisponibles.map(u => (
@@ -183,7 +183,7 @@ export default function SociosPage() {
                 )}
               </div>
               <div style={{ display:'flex', gap:'10px', marginTop:'1rem' }}>
-                <button type="button" onClick={() => setModalAbierto(false)} style={{ flex:1, background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'#fff', padding:'0.8rem', borderRadius:'10px', cursor:'pointer' }}>Cancelar</button>
+                <button type="button" onClick={() => setModalAbierto(false)} style={{ flex:1, background:'var(--btn-secondary-bg)', border:'1px solid var(--btn-secondary-border)', color:'var(--btn-secondary-text)', padding:'0.8rem', borderRadius:'10px', cursor:'pointer' }}>Cancelar</button>
                 <button 
                   type="submit" 
                   disabled={registrando || !idUsuarioSel} 

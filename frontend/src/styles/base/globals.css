@@ -8,11 +8,168 @@
   --background: #050508;
   --surface: rgba(255, 255, 255, 0.03);
   --surface-border: rgba(255, 255, 255, 0.08);
+  --surface-input: rgba(0, 0, 0, 0.2);
+  --surface-hover: rgba(255, 255, 255, 0.05);
   --text-main: #ffffff;
-  --text-muted: #94a3b8;
+  --text-muted: rgba(255, 255, 255, 0.6);
+  --text-faint: rgba(255, 255, 255, 0.4);
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
   --selection: rgba(0, 242, 255, 0.2);
+
+  /* Overlay / modals */
+  --modal-bg: #111111;
+  --modal-overlay: rgba(0, 0, 0, 0.8);
+
+  /* Table & subtle surfaces */
+  --table-header-bg: rgba(255, 255, 255, 0.02);
+  --table-border: rgba(255, 255, 255, 0.1);
+  --table-row-border: rgba(255, 255, 255, 0.05);
+  --table-header-text: rgba(255, 255, 255, 0.5);
+
+  /* Button on gradient  */
+  --btn-gradient-text: #000000;
+
+  /* Sidebar nav */
+  --nav-text: rgba(255, 255, 255, 0.5);
+  --nav-hover-bg: rgba(255, 255, 255, 0.03);
+  --nav-active-text: #000000;
+  --sidebar-border: rgba(255, 255, 255, 0.05);
+  --sidebar-footer-text: rgba(255, 255, 255, 0.55);
+
+  /* Top bar */
+  --topbar-border: rgba(255, 255, 255, 0.05);
+  --icon-btn-bg: rgba(255, 255, 255, 0.05);
+  --icon-btn-border: rgba(255, 255, 255, 0.1);
+  --icon-btn-hover: rgba(255, 255, 255, 0.1);
+
+  /* Alert & accent */
+  --alert-glow: rgba(0, 242, 255, 0.2);
+
+  /* Card shadow */
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+
+  /* Active nav shadow */
+  --nav-active-shadow: 0 10px 20px rgba(0, 242, 255, 0.2);
+
+  /* Glass pill */
+  --glass-pill-bg: rgba(255, 255, 255, 0.05);
+  --glass-pill-border: rgba(255, 255, 255, 0.1);
+
+  /* Background overlay gradient */
+  --bg-overlay: radial-gradient(circle at center, transparent 0%, #050505 100%);
+  --bg-image-opacity: 0.15;
+
+  /* Subtle element backgrounds (for quick-action boxes, chart areas, etc.) */
+  --subtle-bg: rgba(255, 255, 255, 0.05);
+  --subtle-bg-deeper: rgba(255, 255, 255, 0.03);
+
+  /* Avatar border */
+  --avatar-border: rgba(0, 242, 255, 0.4);
+  --avatar-gradient: linear-gradient(135deg, rgba(0,242,255,0.2), rgba(176,38,255,0.2));
+
+  /* Logout */
+  --logout-bg: rgba(255, 74, 74, 0.05);
+  --logout-border: rgba(255, 74, 74, 0.1);
+  --logout-hover-bg: rgba(255, 74, 74, 0.1);
+
+  /* Refresh / secondary buttons */
+  --btn-secondary-bg: rgba(255, 255, 255, 0.05);
+  --btn-secondary-border: rgba(255, 255, 255, 0.1);
+  --btn-secondary-text: #ffffff;
+
+  /* Scrollbar */
+  --scrollbar-track: var(--background);
+  --scrollbar-thumb: var(--surface-border);
+  --scrollbar-thumb-hover: var(--text-muted);
+
+  /* SVG chart fill for data points */
+  --chart-dot-fill: #050508;
+}
+
+body.light-theme {
+  --primary: #0066e6;
+  --primary-glow: rgba(0, 102, 230, 0.2);
+  --secondary: #7c3aed;
+  --secondary-glow: rgba(124, 58, 237, 0.2);
+  --background: #f0f2f5;
+  --surface: rgba(255, 255, 255, 0.85);
+  --surface-border: rgba(0, 0, 0, 0.08);
+  --surface-input: rgba(0, 0, 0, 0.03);
+  --surface-hover: rgba(0, 0, 0, 0.04);
+  --text-main: #1a1d23;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --selection: rgba(0, 102, 230, 0.12);
+
+  /* Overlay / modals */
+  --modal-bg: #ffffff;
+  --modal-overlay: rgba(0, 0, 0, 0.4);
+
+  /* Table & subtle surfaces */
+  --table-header-bg: rgba(0, 0, 0, 0.02);
+  --table-border: rgba(0, 0, 0, 0.08);
+  --table-row-border: rgba(0, 0, 0, 0.05);
+  --table-header-text: #64748b;
+
+  /* Button on gradient  */
+  --btn-gradient-text: #ffffff;
+
+  /* Sidebar nav */
+  --nav-text: #64748b;
+  --nav-hover-bg: rgba(0, 0, 0, 0.04);
+  --nav-active-text: #ffffff;
+  --sidebar-border: rgba(0, 0, 0, 0.06);
+  --sidebar-footer-text: #64748b;
+
+  /* Top bar */
+  --topbar-border: rgba(0, 0, 0, 0.06);
+  --icon-btn-bg: rgba(0, 0, 0, 0.04);
+  --icon-btn-border: rgba(0, 0, 0, 0.08);
+  --icon-btn-hover: rgba(0, 0, 0, 0.08);
+
+  /* Alert & accent */
+  --alert-glow: rgba(0, 102, 230, 0.15);
+
+  /* Card shadow */
+  --card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+
+  /* Active nav shadow */
+  --nav-active-shadow: 0 8px 20px rgba(0, 102, 230, 0.25);
+
+  /* Glass pill */
+  --glass-pill-bg: rgba(0, 0, 0, 0.04);
+  --glass-pill-border: rgba(0, 0, 0, 0.08);
+
+  /* Background overlay gradient */
+  --bg-overlay: radial-gradient(circle at center, transparent 0%, rgba(240,242,245,0.95) 100%);
+  --bg-image-opacity: 0.06;
+
+  /* Subtle element backgrounds */
+  --subtle-bg: rgba(0, 0, 0, 0.03);
+  --subtle-bg-deeper: rgba(0, 0, 0, 0.02);
+
+  /* Avatar border */
+  --avatar-border: rgba(0, 102, 230, 0.4);
+  --avatar-gradient: linear-gradient(135deg, rgba(0,102,230,0.15), rgba(124,58,237,0.15));
+
+  /* Logout */
+  --logout-bg: rgba(239, 68, 68, 0.06);
+  --logout-border: rgba(239, 68, 68, 0.12);
+  --logout-hover-bg: rgba(239, 68, 68, 0.1);
+
+  /* Refresh / secondary buttons */
+  --btn-secondary-bg: rgba(0, 0, 0, 0.04);
+  --btn-secondary-border: rgba(0, 0, 0, 0.1);
+  --btn-secondary-text: #1a1d23;
+
+  /* Scrollbar */
+  --scrollbar-track: var(--background);
+  --scrollbar-thumb: rgba(0, 0, 0, 0.12);
+  --scrollbar-thumb-hover: rgba(0, 0, 0, 0.25);
+
+  /* SVG chart fill for data points */
+  --chart-dot-fill: #ffffff;
 }
 
 * {
@@ -30,6 +187,7 @@ html, body {
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background 0.35s ease, color 0.35s ease;
 }
 
 body {
@@ -48,12 +206,14 @@ body {
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid var(--surface-border);
   border-radius: 20px;
+  box-shadow: var(--card-shadow);
+  transition: background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease;
 }
 
 .glass-pill {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--glass-pill-bg);
   backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--glass-pill-border);
   border-radius: 999px;
 }
 
@@ -68,12 +228,12 @@ body {
 }
 
 /* Interactive Elements */
-input, button, a {
+input, button, a, select, textarea {
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-input:focus {
+input:focus, textarea:focus, select:focus {
   outline: none;
   border-color: var(--primary);
   box-shadow: 0 0 0 2px var(--primary-glow);
@@ -89,14 +249,20 @@ button:active {
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--background);
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--surface-border);
+  background: var(--scrollbar-thumb);
   border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--text-muted);
+  background: var(--scrollbar-thumb-hover);
+}
+
+/* Light theme specific overrides for glass in modals */
+body.light-theme .glass {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
 }
