@@ -115,8 +115,6 @@ HU-11: Creación de Rutinas (RF-011)
 ○ Inclusión de ejercicios, descansos y observaciones técnicas.
 ○ Almacenamiento con nombre descriptivo para reutilización.
 
-Historias de Usuario Pendientes (Por hacer o completar integración)
-
 HU-12: Asignación de Rutinas (RF-012)
 ● Como: Entrenador.
 ● Quiero: Vincular una rutina guardada a un socio.
@@ -149,6 +147,8 @@ HU-15: Inscripción a Clases (RF-015)
 ● Criterios de Aceptación:
 ○ Validación de membresía activa para inscribirse.
 ○ Descuento automático del cupo disponible.
+
+Historias de Usuario Pendientes (Por hacer o completar integración)
 
 Bloque 7: Control de Acceso y Asistencia
 

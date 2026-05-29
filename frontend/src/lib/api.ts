@@ -9,6 +9,12 @@
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api';
 
+// Redefinimos fetch a nivel de módulo para evitar que Next.js o el navegador guarden caché agresivo
+const originalFetch = typeof window !== 'undefined' ? window.fetch : globalThis.fetch;
+const fetch = async (url: RequestInfo | URL, options?: RequestInit): Promise<Response> => {
+  return originalFetch(url, { ...options, cache: 'no-store' });
+};
+
 // Tipos y Interfaces
 
 export interface UsuarioInfo {
@@ -278,6 +284,7 @@ export interface SocioCompleto {
   asignaciones_entrenador: Asignacion[];
   evaluaciones?: Evaluacion[];
   progresos?: Progreso[];
+  asignaciones_rutina?: AsignacionRutina[];
 }
 
 export const sociosApi = {
@@ -666,3 +673,114 @@ export const rutinasApi = {
     return handleResponse<void>(res);
   },
 };
+
+// ── Clases y Inscripciones API (HU-14, HU-15) ──
+
+export interface Clase {
+  id_clase: number;
+  nombre: string;
+  horario: string; // ISO string
+  cupo: number;
+  entrenador: {
+    id_entrenador: number;
+    usuario: {
+      id_usuario: number;
+      nombre: string;
+    };
+  };
+  inscripciones?: any[];
+}
+
+export interface CreateClasePayload {
+  nombre: string;
+  horario: string;
+  cupo: number;
+  id_entrenador: number;
+}
+
+export interface Inscripcion {
+  id_inscripcion: number;
+  fecha_inscripcion: string;
+  clase: Clase;
+  socio: {
+    id_socio: number;
+    usuario: {
+      id_usuario: number;
+      nombre: string;
+    };
+  };
+}
+
+export interface CreateInscripcionPayload {
+  id_socio: number;
+  id_clase: number;
+}
+
+export const clasesApi = {
+  async findAll(): Promise<Clase[]> {
+    const res = await fetch(`${BASE_URL}/clases`, { headers: buildHeaders() });
+    return handleResponse<Clase[]>(res);
+  },
+  async findOne(id: number): Promise<Clase> {
+    const res = await fetch(`${BASE_URL}/clases/${id}`, { headers: buildHeaders() });
+    return handleResponse<Clase>(res);
+  },
+  async getCuposDisponibles(id: number): Promise<{ cupos_disponibles: number }> {
+    const res = await fetch(`${BASE_URL}/clases/${id}/cupos`, { headers: buildHeaders() });
+    return handleResponse<{ cupos_disponibles: number }>(res);
+  },
+  async create(payload: CreateClasePayload): Promise<Clase> {
+    const res = await fetch(`${BASE_URL}/clases`, {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload),
+    });
+    return handleResponse<Clase>(res);
+  },
+  async update(id: number, payload: Partial<CreateClasePayload>): Promise<Clase> {
+    const res = await fetch(`${BASE_URL}/clases/${id}`, {
+      method: 'PUT',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload),
+    });
+    return handleResponse<Clase>(res);
+  },
+  async remove(id: number): Promise<void> {
+    const res = await fetch(`${BASE_URL}/clases/${id}`, {
+      method: 'DELETE',
+      headers: buildHeaders(),
+    });
+    return handleResponse<void>(res);
+  },
+};
+
+export const inscripcionesApi = {
+  async findAll(): Promise<Inscripcion[]> {
+    const res = await fetch(`${BASE_URL}/inscripciones`, { headers: buildHeaders() });
+    return handleResponse<Inscripcion[]>(res);
+  },
+  async create(payload: CreateInscripcionPayload): Promise<Inscripcion> {
+    const res = await fetch(`${BASE_URL}/inscripciones`, {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload),
+    });
+    return handleResponse<Inscripcion>(res);
+  },
+  async findBySocio(idSocio: number): Promise<Inscripcion[]> {
+    const res = await fetch(`${BASE_URL}/inscripciones/socio/${idSocio}`, { headers: buildHeaders() });
+    return handleResponse<Inscripcion[]>(res);
+  },
+  async findByClase(idClase: number): Promise<Inscripcion[]> {
+    const res = await fetch(`${BASE_URL}/inscripciones/clase/${idClase}`, { headers: buildHeaders() });
+    return handleResponse<Inscripcion[]>(res);
+  },
+  async remove(id: number): Promise<void> {
+    const res = await fetch(`${BASE_URL}/inscripciones/${id}`, {
+      method: 'DELETE',
+      headers: buildHeaders(),
+    });
+    return handleResponse<void>(res);
+  },
+};
+

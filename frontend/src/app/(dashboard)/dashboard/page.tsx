@@ -7,6 +7,67 @@ import { canPerform } from '@/lib/rbac';
 import { Users, CreditCard, BarChart3, TrendingDown, Calendar, Dumbbell, UserCheck, TrendingUp, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
+function WeightLineChart({ data }: { data: Progreso[] }) {
+  if (!data || data.length === 0) return null;
+  const width = 300;
+  const height = 110;
+  const paddingX = 25;
+  const paddingY = 30;
+
+  const weights = data.map(d => Number(d.peso || 0));
+  const minWeight = Math.min(...weights) - 2;
+  const maxWeight = Math.max(...weights) + 2;
+  const range = Math.max(1, maxWeight - minWeight);
+
+  const getX = (index: number) => {
+    if (data.length === 1) return width / 2;
+    return paddingX + (index * ((width - paddingX * 2) / (data.length - 1)));
+  };
+  const getY = (weight: number) => height - paddingY - (((weight - minWeight) / range) * (height - paddingY * 2));
+
+  const pathData = data.map((d, i) => `${i === 0 ? 'M' : 'L'} ${getX(i)} ${getY(Number(d.peso || 0))}`).join(' ');
+
+  return (
+    <svg width="100%" height={height} viewBox={`0 0 ${width} ${height}`} style={{ overflow: 'visible', marginTop: '0.5rem' }}>
+      <defs>
+        <linearGradient id="lineGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="var(--primary)" stopOpacity="0.3" />
+          <stop offset="100%" stopColor="var(--primary)" stopOpacity="0" />
+        </linearGradient>
+      </defs>
+      
+      {data.length > 1 && (
+        <path 
+          d={`${pathData} L ${getX(data.length - 1)} ${height - paddingY} L ${getX(0)} ${height - paddingY} Z`} 
+          fill="url(#lineGradient)" 
+        />
+      )}
+      
+      <line x1={paddingX} y1={height - paddingY} x2={width - paddingX} y2={height - paddingY} stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+      
+      {data.length > 1 && (
+        <path d={pathData} fill="none" stroke="var(--primary)" strokeWidth="3" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,242,255,0.3))' }} />
+      )}
+      
+      {data.map((d, i) => {
+        const x = getX(i);
+        const y = getY(Number(d.peso || 0));
+        return (
+          <g key={i}>
+            <circle cx={x} cy={y} r="5" fill="#050508" stroke="var(--primary)" strokeWidth="2" style={{ transition: 'all 0.3s' }} />
+            <text x={x} y={y - 12} fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">
+              {d.peso}
+            </text>
+            <text x={x} y={height - 10} fill="rgba(255,255,255,0.4)" fontSize="9" textAnchor="middle">
+              {new Date(d.fecha).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
 export default function DashboardPage() {
   const [user, setUser] = useState<any>(null);
   const [role, setRole] = useState('');
@@ -224,8 +285,8 @@ export default function DashboardPage() {
           <div className={`${styles.statCard} glass`}>
             <div className={styles.cardHeader}><div className={`${styles.cardIcon} ${styles.purpleIcon}`}><Dumbbell size={22} color="#fff" /></div></div>
             <div className={styles.cardBody}>
-              <p className={styles.cardLabel}>Rutinas Completadas</p>
-              <h2 className={styles.cardValue}>12</h2>
+              <p className={styles.cardLabel}>Mediciones Registradas</p>
+              <h2 className={styles.cardValue}>{miProgreso.length}</h2>
             </div>
           </div>
         </div>
@@ -256,6 +317,35 @@ export default function DashboardPage() {
                     </div>
                   ))
                 }
+              </div>
+            )}
+          </div>
+        ) : role === 'socio' ? (
+          <div className={`${styles.chartCard} glass`} style={{ overflow:'hidden' }}>
+            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'1.5rem' }}>
+              <h3 className={styles.sectionTitle}>Mis Rutinas</h3>
+              <Link href="/rutinas" style={{ color:'var(--primary)', fontSize:'0.85rem', textDecoration:'none' }}>Ver todas</Link>
+            </div>
+            {cargando ? <p style={{ color:'rgba(255,255,255,0.4)', padding:'1rem' }}>Cargando rutinas...</p> : (
+              <div className={styles.memberList}>
+                {(!miPerfilSocio?.asignaciones_rutina || miPerfilSocio.asignaciones_rutina.length === 0) ? (
+                  <p style={{ color:'rgba(255,255,255,0.4)', padding:'1rem' }}>No tienes rutinas asignadas aún.</p>
+                ) : (
+                  miPerfilSocio.asignaciones_rutina.slice(0, 4).map((a: any) => (
+                    <div key={a.id_asignacion} className={styles.memberItem} style={{ borderBottom:'1px solid rgba(255,255,255,0.05)', paddingBottom:'0.8rem' }}>
+                      <div className={styles.memberInfo}>
+                        <div className={`${styles.memberAvatar} ${styles.avatarPurple}`}><Dumbbell size={18}/></div>
+                        <div>
+                          <p className={styles.memberName}>{a.rutina?.nombre || 'Rutina'}</p>
+                          <span style={{ fontSize:'0.8rem', color:'rgba(255,255,255,0.4)' }}>{a.rutina?.nivel || 'General'}</span>
+                        </div>
+                      </div>
+                      <Link href={`/rutinas`}>
+                        <button style={{ background:'rgba(255,255,255,0.05)', border:'none', color:'var(--primary)', cursor:'pointer' }}><ChevronRight size={20}/></button>
+                      </Link>
+                    </div>
+                  ))
+                )}
               </div>
             )}
           </div>
@@ -324,29 +414,31 @@ export default function DashboardPage() {
             {role === 'socio' && miProgreso.length > 0 ? (
               <div style={{ background:'rgba(255,255,255,0.05)', padding:'1rem', borderRadius:'12px' }}>
                 <p style={{ fontSize:'0.9rem', marginBottom:'0.5rem', color:'rgba(255,255,255,0.7)' }}>Progreso de Peso</p>
-                <div style={{ display:'flex', alignItems:'flex-end', gap:'5px', height:'60px' }}>
-                  {miProgreso.slice(-5).map((p, i) => (
-                    <div key={i} style={{ flex:1, background:'var(--primary)', height:`${(Number(p.peso || 0)/150)*100}%`, borderRadius:'4px 4px 0 0', opacity: 0.5 + (i*0.1) }}></div>
-                  ))}
-                </div>
-                <p style={{ fontSize:'0.75rem', marginTop:'0.5rem', textAlign:'center', color:'rgba(255,255,255,0.4)' }}>Últimas 5 mediciones</p>
+                <WeightLineChart data={miProgreso.slice(-5)} />
+                <p style={{ fontSize:'0.75rem', marginTop:'1rem', textAlign:'center', color:'rgba(255,255,255,0.4)' }}>Últimas mediciones</p>
               </div>
             ) : null}
 
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px' }}>
-              <div style={{ padding:'1rem', background:'rgba(255,255,255,0.05)', borderRadius:'12px', textAlign:'center', cursor:'pointer' }}>
-                <Calendar size={20} color="var(--primary)" style={{ margin:'0 auto 8px' }}/>
-                <p style={{ fontSize:'0.75rem' }}>Clases</p>
-              </div>
-              <div style={{ padding:'1rem', background:'rgba(255,255,255,0.05)', borderRadius:'12px', textAlign:'center', cursor:'pointer' }}>
-                <Dumbbell size={20} color="var(--secondary)" style={{ margin:'0 auto 8px' }}/>
-                <p style={{ fontSize:'0.75rem' }}>Rutinas</p>
-              </div>
-              {role === 'entrenador' && (
-                <div style={{ padding:'1rem', background:'rgba(255,255,255,0.05)', borderRadius:'12px', textAlign:'center', cursor:'pointer', gridColumn:'span 2', display:'flex', alignItems:'center', justifyContent:'center', gap:'10px' }}>
-                  <UserCheck size={20} color="var(--primary)"/>
-                  <p style={{ fontSize:'0.75rem' }}>Evaluar Próximo Socio</p>
+              <Link href="/clases" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div style={{ padding:'1rem', background:'rgba(255,255,255,0.05)', borderRadius:'12px', textAlign:'center', cursor:'pointer', height: '100%' }}>
+                  <Calendar size={20} color="var(--primary)" style={{ margin:'0 auto 8px' }}/>
+                  <p style={{ fontSize:'0.75rem', margin: 0 }}>Clases</p>
                 </div>
+              </Link>
+              <Link href="/rutinas" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div style={{ padding:'1rem', background:'rgba(255,255,255,0.05)', borderRadius:'12px', textAlign:'center', cursor:'pointer', height: '100%' }}>
+                  <Dumbbell size={20} color="var(--secondary)" style={{ margin:'0 auto 8px' }}/>
+                  <p style={{ fontSize:'0.75rem', margin: 0 }}>Rutinas</p>
+                </div>
+              </Link>
+              {role === 'entrenador' && (
+                <Link href="/socios" style={{ textDecoration: 'none', color: 'inherit', gridColumn:'span 2' }}>
+                  <div style={{ padding:'1rem', background:'rgba(255,255,255,0.05)', borderRadius:'12px', textAlign:'center', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', height: '100%' }}>
+                    <UserCheck size={20} color="var(--primary)"/>
+                    <p style={{ fontSize:'0.75rem', margin: 0 }}>Evaluar Próximo Socio</p>
+                  </div>
+                </Link>
               )}
             </div>
           </div>

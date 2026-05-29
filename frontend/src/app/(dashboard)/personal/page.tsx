@@ -122,8 +122,6 @@ export default function PersonalPage() {
         const rolElegido = roles.find(r => r.id_rol === Number(form.id_rol));
         if (rolElegido?.nombre.toLowerCase() === 'entrenador') {
           await entrenadoresApi.create({ id_usuario: nuevo.id_usuario, especialidad: 'Entrenador General' });
-        } else if (rolElegido?.nombre.toLowerCase() === 'socio') {
-          await sociosApi.create({ id_usuario: nuevo.id_usuario });
         }
       } else if (usuarioEditando) {
         const payload: UpdateUsuarioPayload = { nombre:form.nombre.trim(), identificacion:form.identificacion.trim(), correo:form.correo.trim().toLowerCase(), telefono:form.telefono.trim()||undefined, id_rol:Number(form.id_rol), estado:form.estado, ...(form.password?{password:form.password}:{}) };

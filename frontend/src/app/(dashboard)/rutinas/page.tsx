@@ -97,14 +97,31 @@ export default function RutinasPage() {
     setCargando(true);
     setError('');
     try {
-      const [r, e, s] = await Promise.all([
-        rutinasApi.findAll(),
-        ejerciciosApi.findAll(),
-        sociosApi.findAll(),
-      ]);
-      setRutinas(r);
-      setEjercicios(e);
-      setSocios(s);
+      const user = authApi.getUsuarioLocal();
+      const rolStr = user?.rol?.toLowerCase().trim() || '';
+
+      if (rolStr === 'socio') {
+        const miPerfil = await sociosApi.getMiPerfil();
+        if (miPerfil) {
+          const asignaciones = await rutinasApi.findAsignacionesBySocio(miPerfil.id_socio);
+          const unicas = new Map();
+          asignaciones.forEach(a => {
+            if (a.rutina && !unicas.has(a.rutina.id_rutina)) {
+              unicas.set(a.rutina.id_rutina, a.rutina);
+            }
+          });
+          setRutinas(Array.from(unicas.values()));
+        }
+      } else {
+        const [r, e, s] = await Promise.all([
+          rutinasApi.findAll(),
+          ejerciciosApi.findAll(),
+          sociosApi.findAll(),
+        ]);
+        setRutinas(r);
+        setEjercicios(e);
+        setSocios(s);
+      }
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : 'Error al cargar datos';
       setError(msg);
