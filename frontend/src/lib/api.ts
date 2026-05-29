@@ -7,7 +7,7 @@
  *   Prefijo global       → /api   (app.setGlobalPrefix en main.ts)
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3001/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3002/api';
 
 // Redefinimos fetch a nivel de módulo para evitar que Next.js o el navegador guarden caché agresivo
 const originalFetch = typeof window !== 'undefined' ? window.fetch : globalThis.fetch;
@@ -397,6 +397,24 @@ export const planesApi = {
     });
     return handleResponse<Plan>(res);
   },
+  async update(id: number, payload: Partial<CreatePlanPayload & { activo: boolean }>): Promise<Plan> {
+    const res = await fetch(`${BASE_URL}/planes/${id}`, {
+      method: 'PUT',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload),
+    });
+    return handleResponse<Plan>(res);
+  },
+  async remove(id: number): Promise<void> {
+    const res = await fetch(`${BASE_URL}/planes/${id}`, {
+      method: 'DELETE',
+      headers: buildHeaders(),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.message || 'Error eliminando el plan');
+    }
+  }
 };
 
 //  Membresías API (HU-06, HU-07)
@@ -783,4 +801,156 @@ export const inscripcionesApi = {
     return handleResponse<void>(res);
   },
 };
+
+// ── Asistencias API (HU-16, HU-17) ──
+
+export interface RespuestaAcceso {
+  acceso: boolean;
+  color: string;
+  motivo: string;
+  socio?: {
+    id_socio: number;
+    nombre: string;
+    identificacion: string;
+  };
+  membresia?: {
+    id_membresia: number;
+    plan: string;
+    fecha_fin: string;
+    estado: string;
+    dias_restantes: number;
+  };
+  asistencia_registrada?: boolean;
+}
+
+export interface Asistencia {
+  id_asistencia: number;
+  fecha: string;
+  socio: {
+    id_socio: number;
+    usuario: {
+      nombre: string;
+      identificacion: string;
+    };
+  };
+}
+
+export const asistenciasApi = {
+  async validarAcceso(identificacion: string): Promise<RespuestaAcceso> {
+    const res = await fetch(`${BASE_URL}/asistencias/validar-acceso`, {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify({ identificacion }),
+    });
+    return handleResponse<RespuestaAcceso>(res);
+  },
+  async getHoy(): Promise<Asistencia[]> {
+    const res = await fetch(`${BASE_URL}/asistencias/hoy`, {
+      headers: buildHeaders(),
+    });
+    return handleResponse<Asistencia[]>(res);
+  }
+};
+
+// ── Equipos API (HU-18) ──
+
+export interface Equipo {
+  id_equipo: number;
+  nombre: string;
+  codigo_barras: string | null;
+  tipo: string | null;
+  estado: string;
+  ubicacion: string | null;
+  cantidad: number;
+  stock_minimo: number;
+  stock_maximo: number | null;
+  precio_unitario: number | null;
+  mantenimientos?: Mantenimiento[];
+}
+
+export interface CreateEquipoPayload {
+  nombre: string;
+  codigo_barras?: string;
+  tipo?: string;
+  estado?: string;
+  ubicacion?: string;
+  cantidad?: number;
+}
+
+export const equiposApi = {
+  async findAll(): Promise<Equipo[]> {
+    const res = await fetch(`${BASE_URL}/equipos`, { headers: buildHeaders() });
+    return handleResponse<Equipo[]>(res);
+  },
+  async create(payload: CreateEquipoPayload): Promise<Equipo> {
+    const res = await fetch(`${BASE_URL}/equipos`, {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload),
+    });
+    return handleResponse<Equipo>(res);
+  },
+  async update(id: number, payload: Partial<CreateEquipoPayload>): Promise<Equipo> {
+    const res = await fetch(`${BASE_URL}/equipos/${id}`, {
+      method: 'PUT',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload),
+    });
+    return handleResponse<Equipo>(res);
+  },
+};
+
+// ── Mantenimiento API (HU-19) ──
+
+export interface Mantenimiento {
+  id_mantenimiento: number;
+  fecha: string;
+  descripcion: string | null;
+  equipo?: Equipo;
+  usuario?: any;
+}
+
+export interface CreateMantenimientoPayload {
+  id_equipo: number;
+  fecha: string;
+  descripcion?: string;
+}
+
+export const mantenimientoApi = {
+  async create(payload: CreateMantenimientoPayload): Promise<Mantenimiento> {
+    const res = await fetch(`${BASE_URL}/mantenimiento`, {
+      method: 'POST',
+      headers: buildHeaders(),
+      body: JSON.stringify(payload),
+    });
+    return handleResponse<Mantenimiento>(res);
+  },
+};
+
+// ── Reportes API (HU-21) ──
+export const reportesApi = {
+  async getGeneral(): Promise<any> {
+    const res = await fetch(`${BASE_URL}/reportes/general`, { headers: buildHeaders() });
+    return handleResponse<any>(res);
+  },
+  async getMembresias(desde?: string, hasta?: string): Promise<any> {
+    const params = new URLSearchParams();
+    if (desde) params.append('desde', desde);
+    if (hasta) params.append('hasta', hasta);
+    const res = await fetch(`${BASE_URL}/reportes/membresias?${params.toString()}`, { headers: buildHeaders() });
+    return handleResponse<any>(res);
+  },
+  async getAsistencias(desde?: string, hasta?: string): Promise<any> {
+    const params = new URLSearchParams();
+    if (desde) params.append('desde', desde);
+    if (hasta) params.append('hasta', hasta);
+    const res = await fetch(`${BASE_URL}/reportes/asistencias?${params.toString()}`, { headers: buildHeaders() });
+    return handleResponse<any>(res);
+  },
+  async getInventario(): Promise<any> {
+    const res = await fetch(`${BASE_URL}/reportes/inventario`, { headers: buildHeaders() });
+    return handleResponse<any>(res);
+  }
+};
+
 

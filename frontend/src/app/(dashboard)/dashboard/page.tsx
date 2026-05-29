@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import styles from '@/styles/pages/dashboard/dashboard.module.css';
-import { authApi, sociosApi, entrenadoresApi, progresoApi, membresiasApi, type SocioCompleto, type Asignacion, type Progreso, type Membresia } from '@/lib/api';
+import { authApi, sociosApi, entrenadoresApi, progresoApi, membresiasApi, reportesApi, type SocioCompleto, type Asignacion, type Progreso, type Membresia } from '@/lib/api';
 import { canPerform } from '@/lib/rbac';
 import { Users, CreditCard, BarChart3, TrendingDown, Calendar, Dumbbell, UserCheck, TrendingUp, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
@@ -43,7 +43,7 @@ function WeightLineChart({ data }: { data: Progreso[] }) {
         />
       )}
       
-      <line x1={paddingX} y1={height - paddingY} x2={width - paddingX} y2={height - paddingY} stroke="rgba(255,255,255,0.1)" strokeWidth="1" />
+      <line x1={paddingX} y1={height - paddingY} x2={width - paddingX} y2={height - paddingY} stroke="var(--surface-border)" strokeWidth="1" />
       
       {data.length > 1 && (
         <path d={pathData} fill="none" stroke="var(--primary)" strokeWidth="3" style={{ filter: 'drop-shadow(0 4px 6px rgba(0,242,255,0.3))' }} />
@@ -54,11 +54,11 @@ function WeightLineChart({ data }: { data: Progreso[] }) {
         const y = getY(Number(d.peso || 0));
         return (
           <g key={i}>
-            <circle cx={x} cy={y} r="5" fill="#050508" stroke="var(--primary)" strokeWidth="2" style={{ transition: 'all 0.3s' }} />
-            <text x={x} y={y - 12} fill="#fff" fontSize="11" textAnchor="middle" fontWeight="bold">
+            <circle cx={x} cy={y} r="5" fill="var(--chart-dot-fill)" stroke="var(--primary)" strokeWidth="2" style={{ transition: 'all 0.3s' }} />
+            <text x={x} y={y - 12} fill="var(--text-main)" fontSize="11" textAnchor="middle" fontWeight="bold">
               {d.peso}
             </text>
-            <text x={x} y={height - 10} fill="rgba(255,255,255,0.4)" fontSize="9" textAnchor="middle">
+            <text x={x} y={height - 10} fill="var(--text-faint)" fontSize="9" textAnchor="middle">
               {new Date(d.fecha).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
             </text>
           </g>
@@ -78,6 +78,8 @@ export default function DashboardPage() {
   const [membresiasVencer, setMembresiasVencer] = useState<Membresia[]>([]);
   const [totalSociosCount, setTotalSociosCount] = useState<number | null>(null);
   const [activasCount, setActivasCount] = useState<number | null>(null);
+  const [generalStats, setGeneralStats] = useState<any>(null);
+  const [asistenciasStats, setAsistenciasStats] = useState<any>(null);
   const [cargando, setCargando] = useState(false);
 
   useEffect(() => {
@@ -94,14 +96,20 @@ export default function DashboardPage() {
       setCargando(true);
       try {
         if (role === 'admin' || role === 'recepcionista') {
-          const [todasMems, todosSocs] = await Promise.all([
+          const [todasMems, todosSocs, genReport, asisReport] = await Promise.all([
             membresiasApi.findAll(),
-            sociosApi.findAll()
+            sociosApi.findAll(),
+            reportesApi.getGeneral().catch(() => null),
+            reportesApi.getAsistencias().catch(() => null)
           ]);
-          setTotalSociosCount(todosSocs.length);
+          
+          if (genReport) setGeneralStats(genReport);
+          if (asisReport) setAsistenciasStats(asisReport);
+
+          setTotalSociosCount(genReport ? genReport.socios.total : todosSocs.length);
           
           const activas = todasMems.filter(m => m.estado === 'activa' || m.estado === 'renovada');
-          setActivasCount(activas.length);
+          setActivasCount(genReport ? genReport.socios.membresias_activas : activas.length);
 
           const hoy = new Date();
           const sieteDiasMas = new Date();
@@ -159,7 +167,7 @@ export default function DashboardPage() {
           <h2 style={{ fontSize: '1.8rem', fontWeight: 700, marginBottom: '0.5rem' }}>
             Hola, {user?.nombre || 'Usuario'} 👋
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.5)' }}>
+          <p style={{ color: 'var(--text-muted)' }}>
             {role === 'admin' && 'Tienes control total del sistema administrativo.'}
             {role === 'recepcionista' && 'Gestiona los ingresos y socios del día de hoy.'}
             {role === 'entrenador' && 'Revisa tus clases programadas y el progreso de tus socios.'}
@@ -169,13 +177,13 @@ export default function DashboardPage() {
         {role === 'socio' && miPerfilSocio && (() => {
           const membresiaActiva = miPerfilSocio.membresias?.find(m => m.estado === 'activa' || m.estado === 'renovada');
           return (
-            <div className="glass" style={{ padding:'0.5rem 1rem', borderRadius:'12px', border:'1px solid rgba(255,255,255,0.1)', textAlign: 'right' }}>
-              <span style={{ fontSize:'0.8rem', color:'rgba(255,255,255,0.5)' }}>Membresía Activa</span>
+            <div className="glass" style={{ padding:'0.5rem 1rem', borderRadius:'12px', border:'1px solid var(--surface-border)', textAlign: 'right' }}>
+              <span style={{ fontSize:'0.8rem', color:'var(--text-muted)' }}>Membresía Activa</span>
               <p style={{ color:'var(--primary)', fontWeight:700, margin: '2px 0' }}>
                 {membresiaActiva ? membresiaActiva.plan?.nombre.toUpperCase() : 'SIN PLAN ACTIVO'}
               </p>
               {membresiaActiva && (
-                <span style={{ fontSize:'0.7rem', color:'rgba(255,255,255,0.4)', display: 'block' }}>
+                <span style={{ fontSize:'0.7rem', color:'var(--text-faint)', display: 'block' }}>
                   Vence: {membresiaActiva.fecha_fin}
                 </span>
               )}
@@ -209,8 +217,8 @@ export default function DashboardPage() {
             border: '1px solid rgba(239, 68, 68, 0.5)'
           }}>⚠️</div>
           <div style={{ flex: 1 }}>
-            <h4 style={{ margin: 0, fontWeight: 700, fontSize: '0.95rem', color: '#fca5a5' }}>¡Alerta de Vencimiento de Membresía!</h4>
-            <p style={{ margin: '3px 0 0', fontSize: '0.85rem', color: 'rgba(255,255,255,0.7)' }}>
+            <h4 style={{ margin: 0, fontWeight: 700, fontSize: '0.95rem', color: '#ef4444' }}>¡Alerta de Vencimiento de Membresía!</h4>
+            <p style={{ margin: '3px 0 0', fontSize: '0.85rem', color: 'var(--text-main)', opacity: 0.8 }}>
               Hay <strong>{membresiasCriticas.length}</strong> membresía(s) de socios que vencerán en los próximos 3 días. Por favor, toma acción para su renovación.
             </p>
           </div>
@@ -220,9 +228,9 @@ export default function DashboardPage() {
               if (el) el.scrollIntoView({ behavior: 'smooth' });
             }}
             style={{
-              background: 'rgba(255,255,255,0.08)',
-              border: '1px solid rgba(255,255,255,0.15)',
-              color: '#fff',
+              background: 'var(--btn-secondary-bg)',
+              border: '1px solid var(--btn-secondary-border)',
+              color: 'var(--btn-secondary-text)',
               padding: '0.5rem 1rem',
               borderRadius: '10px',
               cursor: 'pointer',
@@ -253,11 +261,15 @@ export default function DashboardPage() {
           </div>
           <div className={`${styles.statCard} glass`}>
             <div className={styles.cardHeader}><div className={`${styles.cardIcon} ${styles.cyanIcon}`}><BarChart3 size={22} color="#fff" /></div></div>
-            <div className={styles.cardBody}><p className={styles.cardLabel}>Ingresos del Mes</p><h2 className={styles.cardValue}>$4.2M COP</h2></div>
+            <div className={styles.cardBody}><p className={styles.cardLabel}>Ingresos del Mes</p><h2 className={styles.cardValue}>
+              {generalStats?.finanzas?.ingresos_mes !== undefined ? new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 }).format(generalStats.finanzas.ingresos_mes) : '...'}
+            </h2></div>
           </div>
           <div className={`${styles.statCard} glass`}>
             <div className={styles.cardHeader}><div className={`${styles.cardIcon} ${styles.indigoIcon}`}><TrendingDown size={22} color="#fff" /></div></div>
-            <div className={styles.cardBody}><p className={styles.cardLabel}>Tasa de Deserción</p><h2 className={styles.cardValue}>8%</h2></div>
+            <div className={styles.cardBody}><p className={styles.cardLabel}>Tasa de Deserción</p><h2 className={styles.cardValue}>
+              {generalStats?.socios ? Math.round((generalStats.socios.membresias_vencidas_mes / (generalStats.socios.membresias_activas + generalStats.socios.membresias_vencidas_mes || 1)) * 100) : 0}%
+            </h2></div>
           </div>
         </div>
       )}
@@ -301,18 +313,18 @@ export default function DashboardPage() {
             </div>
             {cargando ? <p>Cargando asignaciones...</p> : (
               <div className={styles.memberList}>
-                {misAsignaciones.length === 0 ? <p style={{ color:'rgba(255,255,255,0.4)', padding:'1rem' }}>No tienes socios asignados aún.</p> : 
+                {misAsignaciones.length === 0 ? <p style={{ color:'var(--text-faint)', padding:'1rem' }}>No tienes socios asignados aún.</p> : 
                   misAsignaciones.map(a => (
-                    <div key={a.id_asignacion} className={styles.memberItem} style={{ borderBottom:'1px solid rgba(255,255,255,0.05)', paddingBottom:'0.8rem' }}>
+                    <div key={a.id_asignacion} className={styles.memberItem} style={{ borderBottom:'1px solid var(--table-row-border)', paddingBottom:'0.8rem' }}>
                       <div className={styles.memberInfo}>
                         <div className={`${styles.memberAvatar} ${styles.avatarCyan}`}>{a.socio.usuario?.nombre?.substring(0,2).toUpperCase() || 'S'}</div>
                         <div>
                           <p className={styles.memberName}>{a.socio.usuario?.nombre || 'Socio'}</p>
-                          <span style={{ fontSize:'0.8rem', color:'rgba(255,255,255,0.4)' }}>Asignado el: {new Date(a.fecha_asignacion).toLocaleDateString()}</span>
+                          <span style={{ fontSize:'0.8rem', color:'var(--text-faint)' }}>Asignado el: {new Date(a.fecha_asignacion).toLocaleDateString()}</span>
                         </div>
                       </div>
                       <Link href={`/socios/${a.socio.id_socio}`}>
-                        <button style={{ background:'rgba(255,255,255,0.05)', border:'none', color:'var(--primary)', cursor:'pointer' }}><ChevronRight size={20}/></button>
+                        <button style={{ background:'var(--btn-secondary-bg)', border:'1px solid var(--btn-secondary-border)', color:'var(--primary)', cursor:'pointer', display:'flex', padding:'4px', borderRadius:'8px' }}><ChevronRight size={20}/></button>
                       </Link>
                     </div>
                   ))
@@ -326,22 +338,22 @@ export default function DashboardPage() {
               <h3 className={styles.sectionTitle}>Mis Rutinas</h3>
               <Link href="/rutinas" style={{ color:'var(--primary)', fontSize:'0.85rem', textDecoration:'none' }}>Ver todas</Link>
             </div>
-            {cargando ? <p style={{ color:'rgba(255,255,255,0.4)', padding:'1rem' }}>Cargando rutinas...</p> : (
+            {cargando ? <p style={{ color:'var(--text-faint)', padding:'1rem' }}>Cargando rutinas...</p> : (
               <div className={styles.memberList}>
                 {(!miPerfilSocio?.asignaciones_rutina || miPerfilSocio.asignaciones_rutina.length === 0) ? (
-                  <p style={{ color:'rgba(255,255,255,0.4)', padding:'1rem' }}>No tienes rutinas asignadas aún.</p>
+                  <p style={{ color:'var(--text-faint)', padding:'1rem' }}>No tienes rutinas asignadas aún.</p>
                 ) : (
                   miPerfilSocio.asignaciones_rutina.slice(0, 4).map((a: any) => (
-                    <div key={a.id_asignacion} className={styles.memberItem} style={{ borderBottom:'1px solid rgba(255,255,255,0.05)', paddingBottom:'0.8rem' }}>
+                    <div key={a.id_asignacion} className={styles.memberItem} style={{ borderBottom:'1px solid var(--table-row-border)', paddingBottom:'0.8rem' }}>
                       <div className={styles.memberInfo}>
                         <div className={`${styles.memberAvatar} ${styles.avatarPurple}`}><Dumbbell size={18}/></div>
                         <div>
                           <p className={styles.memberName}>{a.rutina?.nombre || 'Rutina'}</p>
-                          <span style={{ fontSize:'0.8rem', color:'rgba(255,255,255,0.4)' }}>{a.rutina?.nivel || 'General'}</span>
+                          <span style={{ fontSize:'0.8rem', color:'var(--text-faint)' }}>{a.rutina?.nivel || 'General'}</span>
                         </div>
                       </div>
                       <Link href={`/rutinas`}>
-                        <button style={{ background:'rgba(255,255,255,0.05)', border:'none', color:'var(--primary)', cursor:'pointer' }}><ChevronRight size={20}/></button>
+                        <button style={{ background:'var(--btn-secondary-bg)', border:'1px solid var(--btn-secondary-border)', color:'var(--primary)', cursor:'pointer', display:'flex', padding:'4px', borderRadius:'8px' }}><ChevronRight size={20}/></button>
                       </Link>
                     </div>
                   ))
@@ -353,17 +365,25 @@ export default function DashboardPage() {
           <div className={`${styles.chartCard} glass`}>
             <h3 className={styles.sectionTitle}>Asistencia General Semanal</h3>
             <div className={styles.barChart}>
-              {[
-                { label: 'Lun', h: '70%' }, { label: 'Mar', h: '85%' }, 
-                { label: 'Mié', h: '75%' }, { label: 'Jue', h: '90%' },
-                { label: 'Vie', h: '95%' }, { label: 'Sáb', h: '50%' }, 
-                { label: 'Dom', h: '40%' }
-              ].map(d => (
-                <div key={d.label} className={styles.barGroup}>
-                  <div className={styles.bar} style={{ height: d.h }}></div>
-                  <span className={styles.barLabel}>{d.label}</span>
-                </div>
-              ))}
+              {(() => {
+                const diasMap = asistenciasStats?.por_dia_semana || {};
+                const max = Math.max(1, ...Object.values(diasMap).map(Number));
+                return [
+                  { label: 'Lun', key: 'Lunes' }, { label: 'Mar', key: 'Martes' }, 
+                  { label: 'Mié', key: 'Miércoles' }, { label: 'Jue', key: 'Jueves' },
+                  { label: 'Vie', key: 'Viernes' }, { label: 'Sáb', key: 'Sábado' }, 
+                  { label: 'Dom', key: 'Domingo' }
+                ].map(d => {
+                  const val = diasMap[d.key] || 0;
+                  const pct = Math.max(5, (val / max) * 100);
+                  return (
+                    <div key={d.label} className={styles.barGroup}>
+                      <div className={styles.bar} style={{ height: `${pct}%` }}></div>
+                      <span className={styles.barLabel}>{d.label}</span>
+                    </div>
+                  );
+                });
+              })()}
             </div>
           </div>
         )}
@@ -373,9 +393,9 @@ export default function DashboardPage() {
             <h3 className={styles.sectionTitle}>Membresías por Vencer</h3>
             <div className={styles.memberList}>
               {cargando ? (
-                <p style={{ color:'rgba(255,255,255,0.4)', padding:'1rem', textAlign:'center' }}>Cargando membresías...</p>
+                <p style={{ color:'var(--text-faint)', padding:'1rem', textAlign:'center' }}>Cargando membresías...</p>
               ) : membresiasVencer.length === 0 ? (
-                <p style={{ color:'rgba(255,255,255,0.4)', padding:'1rem', textAlign:'center', fontSize:'0.9rem' }}>No hay membresías por vencer próximamente.</p>
+                <p style={{ color:'var(--text-faint)', padding:'1rem', textAlign:'center', fontSize:'0.9rem' }}>No hay membresías por vencer próximamente.</p>
               ) : (
                 membresiasVencer.map(m => {
                   const hoy = new Date();
@@ -412,29 +432,29 @@ export default function DashboardPage() {
             <h3 className={styles.sectionTitle}>{role === 'socio' ? 'Mi Resumen' : 'Accesos Rápidos'}</h3>
             
             {role === 'socio' && miProgreso.length > 0 ? (
-              <div style={{ background:'rgba(255,255,255,0.05)', padding:'1rem', borderRadius:'12px' }}>
-                <p style={{ fontSize:'0.9rem', marginBottom:'0.5rem', color:'rgba(255,255,255,0.7)' }}>Progreso de Peso</p>
+              <div style={{ background:'var(--subtle-bg-deeper)', border:'1px solid var(--surface-border)', padding:'1rem', borderRadius:'12px' }}>
+                <p style={{ fontSize:'0.9rem', marginBottom:'0.5rem', color:'var(--text-muted)' }}>Progreso de Peso</p>
                 <WeightLineChart data={miProgreso.slice(-5)} />
-                <p style={{ fontSize:'0.75rem', marginTop:'1rem', textAlign:'center', color:'rgba(255,255,255,0.4)' }}>Últimas mediciones</p>
+                <p style={{ fontSize:'0.75rem', marginTop:'1rem', textAlign:'center', color:'var(--text-faint)' }}>Últimas mediciones</p>
               </div>
             ) : null}
 
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px' }}>
               <Link href="/clases" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div style={{ padding:'1rem', background:'rgba(255,255,255,0.05)', borderRadius:'12px', textAlign:'center', cursor:'pointer', height: '100%' }}>
+                <div style={{ padding:'1rem', background:'var(--btn-secondary-bg)', border:'1px solid var(--btn-secondary-border)', borderRadius:'12px', textAlign:'center', cursor:'pointer', height: '100%' }}>
                   <Calendar size={20} color="var(--primary)" style={{ margin:'0 auto 8px' }}/>
                   <p style={{ fontSize:'0.75rem', margin: 0 }}>Clases</p>
                 </div>
               </Link>
               <Link href="/rutinas" style={{ textDecoration: 'none', color: 'inherit' }}>
-                <div style={{ padding:'1rem', background:'rgba(255,255,255,0.05)', borderRadius:'12px', textAlign:'center', cursor:'pointer', height: '100%' }}>
+                <div style={{ padding:'1rem', background:'var(--btn-secondary-bg)', border:'1px solid var(--btn-secondary-border)', borderRadius:'12px', textAlign:'center', cursor:'pointer', height: '100%' }}>
                   <Dumbbell size={20} color="var(--secondary)" style={{ margin:'0 auto 8px' }}/>
                   <p style={{ fontSize:'0.75rem', margin: 0 }}>Rutinas</p>
                 </div>
               </Link>
               {role === 'entrenador' && (
                 <Link href="/socios" style={{ textDecoration: 'none', color: 'inherit', gridColumn:'span 2' }}>
-                  <div style={{ padding:'1rem', background:'rgba(255,255,255,0.05)', borderRadius:'12px', textAlign:'center', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', height: '100%' }}>
+                  <div style={{ padding:'1rem', background:'var(--btn-secondary-bg)', border:'1px solid var(--btn-secondary-border)', borderRadius:'12px', textAlign:'center', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', height: '100%' }}>
                     <UserCheck size={20} color="var(--primary)"/>
                     <p style={{ fontSize:'0.75rem', margin: 0 }}>Evaluar Próximo Socio</p>
                   </div>

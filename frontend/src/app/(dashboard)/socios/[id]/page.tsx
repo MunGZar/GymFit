@@ -167,7 +167,7 @@ export default function SocioProfilePage() {
   return (
     <div className={styles.container}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
-        <Link href="/socios" style={{ display: 'flex', alignItems: 'center', color: 'rgba(255,255,255,0.6)', textDecoration: 'none' }}>
+        <Link href="/socios" style={{ display: 'flex', alignItems: 'center', color: 'var(--text-muted)', textDecoration: 'none' }}>
           <ChevronLeft size={20} /> Volver
         </Link>
         <h2 className={styles.sectionTitle} style={{ marginBottom: 0 }}>Perfil del Socio</h2>
@@ -179,7 +179,7 @@ export default function SocioProfilePage() {
         </div>
         <div style={{ flex: 1 }}>
           <h1 style={{ fontSize: '1.8rem', marginBottom: '5px' }}>{socio.usuario?.nombre || 'Socio'}</h1>
-          <p style={{ color: 'rgba(255,255,255,0.6)', marginBottom: '10px' }}>{socio.usuario?.correo || 'Sin correo'} | ID: {socio.usuario?.identificacion || '—'}</p>
+          <p style={{ color: 'var(--text-muted)', marginBottom: '10px' }}>{socio.usuario?.correo || 'Sin correo'} | ID: {socio.usuario?.identificacion || '—'}</p>
           <div style={{ display: 'flex', gap: '10px' }}>
             <span style={{ background: socio.usuario?.estado ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)', color: socio.usuario?.estado ? '#4ade80' : '#f87171', padding: '0.3rem 0.8rem', borderRadius: '20px', fontSize: '0.8rem', fontWeight: '600' }}>
               {socio.usuario?.estado ? 'Activo' : 'Inactivo'}
@@ -221,23 +221,23 @@ export default function SocioProfilePage() {
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.9rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ color: 'rgba(255,255,255,0.6)' }}>Precio:</span>
+                        <span style={{ color: 'var(--text-muted)' }}>Precio:</span>
                         <span style={{ fontWeight: 600 }}>${membresiaActiva.plan?.precio} COP</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ color: 'rgba(255,255,255,0.6)' }}>Duración:</span>
+                        <span style={{ color: 'var(--text-muted)' }}>Duración:</span>
                         <span style={{ fontWeight: 600 }}>{membresiaActiva.plan?.duracion_meses} mes(es)</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                        <span style={{ color: 'rgba(255,255,255,0.6)' }}>Vence:</span>
-                        <span style={{ fontWeight: 600, color: esCritico ? '#f87171' : '#fff' }}>{membresiaActiva.fecha_fin}</span>
+                        <span style={{ color: 'var(--text-muted)' }}>Vence:</span>
+                        <span style={{ fontWeight: 600, color: esCritico ? '#f87171' : 'var(--text-main)' }}>{membresiaActiva.fecha_fin}</span>
                       </div>
                     </div>
                     
                     <div style={{
-                      marginTop: '15px', padding: '10px', borderRadius: '10px', background: esCritico ? 'rgba(239, 68, 68, 0.1)' : 'rgba(255,255,255,0.03)',
-                      border: esCritico ? '1px solid rgba(239, 68, 68, 0.2)' : '1px solid rgba(255,255,255,0.05)',
-                      textAlign: 'center', fontSize: '0.8rem', color: esCritico ? '#f87171' : 'rgba(255,255,255,0.5)', fontWeight: 600
+                      marginTop: '15px', padding: '10px', borderRadius: '10px', background: esCritico ? 'rgba(239, 68, 68, 0.1)' : 'var(--subtle-bg)',
+                      border: esCritico ? '1px solid rgba(239, 68, 68, 0.2)' : '1px solid var(--surface-border)',
+                      textAlign: 'center', fontSize: '0.8rem', color: esCritico ? '#f87171' : 'var(--text-muted)', fontWeight: 600
                     }}>
                       {diasRestantes <= 0 ? '⚠️ Membresía vence hoy' : `Quedan ${diasRestantes} días de vigencia`}
                     </div>
@@ -253,7 +253,7 @@ export default function SocioProfilePage() {
                     Sin membresía activa
                   </div>
                   {ultHistorial && (
-                    <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', marginBottom: '15px' }}>
+                    <p style={{ fontSize: '0.75rem', color: 'var(--text-faint)', marginBottom: '15px' }}>
                       Último plan: {ultHistorial.plan?.nombre} (Estado: {ultHistorial.estado}, Venció: {ultHistorial.fecha_fin})
                     </p>
                   )}
@@ -274,11 +274,11 @@ export default function SocioProfilePage() {
               <Dumbbell size={20} color="var(--primary)" /> Asignación
             </h3>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
-              <span style={{ color: 'rgba(255,255,255,0.7)' }}>Entrenador:</span>
+              <span style={{ color: 'var(--text-muted)' }}>Entrenador:</span>
               <span style={{ fontWeight: 'bold' }}>{socio.asignaciones_entrenador[0]?.entrenador?.usuario?.nombre || 'No asignado'}</span>
             </div>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ color: 'rgba(255,255,255,0.7)' }}>Fecha de Inicio:</span>
+              <span style={{ color: 'var(--text-muted)' }}>Fecha de Inicio:</span>
               <span style={{ fontWeight: 'bold' }}>{socio.asignaciones_entrenador[0]?.fecha_asignacion || '—'}</span>
             </div>
           </div>
@@ -290,15 +290,15 @@ export default function SocioProfilePage() {
             {rutinasAsignadas.length > 0 ? (
               <div style={{ display:'flex', flexDirection:'column', gap:'0.8rem' }}>
                 {rutinasAsignadas.map(ra => (
-                  <div key={ra.id_asignacion_rutina} style={{ padding:'0.8rem', background:'rgba(255,255,255,0.03)', borderRadius:'10px', border:'1px solid rgba(255,255,255,0.05)' }}>
+                  <div key={ra.id_asignacion_rutina} style={{ padding:'0.8rem', background:'var(--subtle-bg)', borderRadius:'10px', border:'1px solid var(--surface-border)' }}>
                     <p style={{ fontWeight:600, fontSize:'0.9rem' }}>{ra.rutina.nombre}</p>
-                    <p style={{ fontSize:'0.75rem', color:'rgba(255,255,255,0.5)' }}>Asignada: {ra.fecha_asignacion}</p>
+                    <p style={{ fontSize:'0.75rem', color:'var(--text-faint)' }}>Asignada: {ra.fecha_asignacion}</p>
                   </div>
                 ))}
               </div>
             ) : (
               <div style={{ textAlign:'center', padding:'1rem' }}>
-                <p style={{ color:'rgba(255,255,255,0.3)', fontSize:'0.85rem', marginBottom:'10px' }}>Sin rutinas activas.</p>
+                <p style={{ color:'var(--text-faint)', fontSize:'0.85rem', marginBottom:'10px' }}>Sin rutinas activas.</p>
                 <Link href="/rutinas">
                   <button style={{ background:'rgba(0, 242, 255, 0.1)', color:'var(--primary)', border:'1px solid var(--primary)', padding:'0.4rem 0.8rem', borderRadius:'6px', fontSize:'0.75rem', cursor:'pointer' }}>Asignar una</button>
                 </Link>
@@ -313,17 +313,17 @@ export default function SocioProfilePage() {
             {evalInicial ? (
               <>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                  <span style={{ color: 'rgba(255,255,255,0.7)' }}>Peso Inicial:</span>
+                  <span style={{ color: 'var(--text-muted)' }}>Peso Inicial:</span>
                   <span style={{ fontWeight: 'bold' }}>{evalInicial.peso} kg</span>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
-                  <span style={{ color: 'rgba(255,255,255,0.7)' }}>Grasa:</span>
+                  <span style={{ color: 'var(--text-muted)' }}>Grasa:</span>
                   <span style={{ fontWeight: 'bold' }}>{evalInicial.grasa || '—'} %</span>
                 </div>
-                <p style={{ fontSize:'0.8rem', color:'rgba(255,255,255,0.4)', marginTop:'10px' }}>Fecha: {evalInicial.fecha}</p>
+                <p style={{ fontSize:'0.8rem', color:'var(--text-faint)', marginTop:'10px' }}>Fecha: {evalInicial.fecha}</p>
               </>
             ) : (
-              <p style={{ color:'rgba(255,255,255,0.3)', fontSize:'0.9rem' }}>Sin evaluaciones registradas.</p>
+              <p style={{ color:'var(--text-faint)', fontSize:'0.9rem' }}>Sin evaluaciones registradas.</p>
             )}
           </div>
         </div>
@@ -335,16 +335,16 @@ export default function SocioProfilePage() {
               <h3 style={{ fontSize: '1.1rem', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
                 <TrendingUp size={20} color="var(--primary)" /> Progreso Físico Interactivo
               </h3>
-              <p style={{ margin: '3px 0 0', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)' }}>Monitorea el avance corporal a lo largo del tiempo</p>
+              <p style={{ margin: '3px 0 0', fontSize: '0.8rem', color: 'var(--text-faint)' }}>Monitorea el avance corporal a lo largo del tiempo</p>
             </div>
             
             <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-              <div className="glass" style={{ display: 'flex', padding: '2px', borderRadius: '8px', background: 'rgba(0,0,0,0.2)', border: '1px solid rgba(255,255,255,0.05)' }}>
+              <div className="glass" style={{ display: 'flex', padding: '2px', borderRadius: '8px', background: 'var(--subtle-bg)', border: '1px solid var(--surface-border)' }}>
                 <button 
                   onClick={() => setMetricaProgreso('peso')}
                   style={{
                     background: metricaProgreso === 'peso' ? 'var(--primary)' : 'transparent',
-                    color: metricaProgreso === 'peso' ? '#000' : '#fff',
+                    color: metricaProgreso === 'peso' ? '#000' : 'var(--text-main)',
                     border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, transition: 'all 0.2s'
                   }}
                 >
@@ -354,7 +354,7 @@ export default function SocioProfilePage() {
                   onClick={() => setMetricaProgreso('grasa')}
                   style={{
                     background: metricaProgreso === 'grasa' ? 'var(--primary)' : 'transparent',
-                    color: metricaProgreso === 'grasa' ? '#000' : '#fff',
+                    color: metricaProgreso === 'grasa' ? '#000' : 'var(--text-main)',
                     border: 'none', padding: '0.4rem 0.8rem', borderRadius: '6px', cursor: 'pointer', fontSize: '0.75rem', fontWeight: 700, transition: 'all 0.2s'
                   }}
                 >
@@ -373,16 +373,16 @@ export default function SocioProfilePage() {
           {/* Estadísticas rápidas superiores de la métrica */}
           {totalPuntos > 0 && (
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginBottom: '1.5rem' }}>
-              <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '0.8rem', borderRadius: '12px', textAlign: 'center' }}>
-                <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', margin: 0 }}>Medición Inicial</p>
-                <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: '4px 0 0' }}>{valorInicial} <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)' }}>{metricaProgreso === 'peso' ? 'kg' : '%'}</span></p>
+              <div style={{ background: 'var(--subtle-bg)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: '12px', textAlign: 'center' }}>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>Medición Inicial</p>
+                <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: '4px 0 0' }}>{valorInicial} <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-faint)' }}>{metricaProgreso === 'peso' ? 'kg' : '%'}</span></p>
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '0.8rem', borderRadius: '12px', textAlign: 'center' }}>
-                <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', margin: 0 }}>Medición Actual</p>
-                <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: '4px 0 0' }}>{valorActual} <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'rgba(255,255,255,0.5)' }}>{metricaProgreso === 'peso' ? 'kg' : '%'}</span></p>
+              <div style={{ background: 'var(--subtle-bg)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: '12px', textAlign: 'center' }}>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>Medición Actual</p>
+                <p style={{ fontSize: '1.2rem', fontWeight: 'bold', margin: '4px 0 0' }}>{valorActual} <span style={{ fontSize: '0.8rem', fontWeight: 500, color: 'var(--text-faint)' }}>{metricaProgreso === 'peso' ? 'kg' : '%'}</span></p>
               </div>
-              <div style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', padding: '0.8rem', borderRadius: '12px', textAlign: 'center' }}>
-                <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.5)', margin: 0 }}>Variación Total</p>
+              <div style={{ background: 'var(--subtle-bg)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: '12px', textAlign: 'center' }}>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', margin: 0 }}>Variación Total</p>
                 <p style={{ 
                   fontSize: '1.2rem', fontWeight: 'bold', margin: '4px 0 0', 
                   color: Number(diferenciaTotal) <= 0 ? '#4ade80' : '#f87171' 
@@ -394,13 +394,13 @@ export default function SocioProfilePage() {
           )}
 
           {/* Gráfico SVG interactivo */}
-          <div className="glass" style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'rgba(0,0,0,0.15)', border: '1px solid rgba(255,255,255,0.05)', minHeight: '240px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div className="glass" style={{ flex: 1, padding: '1rem', borderRadius: '12px', background: 'var(--subtle-bg-deeper)', border: '1px solid var(--surface-border)', minHeight: '240px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             {totalPuntos === 0 ? (
-              <p style={{ color:'rgba(255,255,255,0.3)', fontSize:'0.9rem', textAlign:'center' }}>No hay registros de {metricaProgreso} para este socio.</p>
+              <p style={{ color:'var(--text-faint)', fontSize:'0.9rem', textAlign:'center' }}>No hay registros de {metricaProgreso} para este socio.</p>
             ) : totalPuntos === 1 ? (
               <div style={{ textAlign: 'center' }}>
                 <p style={{ fontSize: '2.5rem', fontWeight: '800', color: 'var(--primary)', margin: 0 }}>{valorActual} {metricaProgreso === 'peso' ? 'kg' : '%'}</p>
-                <p style={{ color:'rgba(255,255,255,0.4)', fontSize:'0.8rem', marginTop: '5px' }}>Se requiere registrar al menos una medición adicional para trazar la gráfica.</p>
+                <p style={{ color:'var(--text-muted)', fontSize:'0.8rem', marginTop: '5px' }}>Se requiere registrar al menos una medición adicional para trazar la gráfica.</p>
               </div>
             ) : (
               <div style={{ width: '100%', height: '100%', position: 'relative' }}>
@@ -419,8 +419,8 @@ export default function SocioProfilePage() {
                   {/* Grid Lines */}
                   {gridLines.map((line, idx) => (
                     <g key={idx} opacity="0.15">
-                      <line x1={svgPaddingLeft} y1={line.y} x2={svgWidth - svgPaddingRight} y2={line.y} stroke="#fff" strokeWidth="1" strokeDasharray="3,3" />
-                      <text x={svgPaddingLeft - 10} y={line.y + 4} fill="#fff" fontSize="9" textAnchor="end" fontWeight="600">{line.label}</text>
+                      <line x1={svgPaddingLeft} y1={line.y} x2={svgWidth - svgPaddingRight} y2={line.y} stroke="var(--text-main)" strokeWidth="1" strokeDasharray="3,3" />
+                      <text x={svgPaddingLeft - 10} y={line.y + 4} fill="var(--text-main)" fontSize="9" textAnchor="end" fontWeight="600">{line.label}</text>
                     </g>
                   ))}
 
@@ -436,7 +436,7 @@ export default function SocioProfilePage() {
                     return (
                       <g key={idx}>
                         {showLabel && (
-                          <text x={p.x} y={svgHeight - 15} fill="rgba(255,255,255,0.4)" fontSize="9" textAnchor="middle" fontWeight="600">
+                          <text x={p.x} y={svgHeight - 15} fill="var(--text-muted)" fontSize="9" textAnchor="middle" fontWeight="600">
                             {p.fecha}
                           </text>
                         )}
@@ -467,12 +467,12 @@ export default function SocioProfilePage() {
                   {/* Hover vertical line and tooltip */}
                   {hoveredPoint && (
                     <g>
-                      <line x1={hoveredPoint.x} y1={svgPaddingTop} x2={hoveredPoint.x} y2={svgPaddingTop + chartHeight} stroke="rgba(255,255,255,0.2)" strokeWidth="1" strokeDasharray="3,3" />
+                      <line x1={hoveredPoint.x} y1={svgPaddingTop} x2={hoveredPoint.x} y2={svgPaddingTop + chartHeight} stroke="var(--surface-border)" strokeWidth="1" strokeDasharray="3,3" />
                       <circle cx={hoveredPoint.x} cy={hoveredPoint.y} r="7" fill={metricaProgreso === 'peso' ? '#00f2ff' : '#a855f7'} opacity="0.3" />
                       <foreignObject x={Math.min(svgWidth - 140, Math.max(10, hoveredPoint.x - 65))} y={Math.max(5, hoveredPoint.y - 55)} width="130" height="48">
-                        <div style={{ background: '#111', border: `1px solid ${metricaProgreso === 'peso' ? '#00f2ff' : '#a855f7'}`, borderRadius: '8px', padding: '4px 8px', textAlign: 'center', boxShadow: '0 5px 15px rgba(0,0,0,0.5)', pointerEvents: 'none' }}>
-                          <p style={{ margin: 0, fontSize: '9px', color: 'rgba(255,255,255,0.4)', fontWeight: 600 }}>{hoveredPoint.fecha}</p>
-                          <p style={{ margin: '2px 0 0', fontSize: '12px', fontWeight: 800, color: '#fff' }}>
+                        <div style={{ background: 'var(--tooltip-bg, #111)', border: `1px solid ${metricaProgreso === 'peso' ? '#00f2ff' : '#a855f7'}`, borderRadius: '8px', padding: '4px 8px', textAlign: 'center', boxShadow: '0 5px 15px rgba(0,0,0,0.5)', pointerEvents: 'none' }}>
+                          <p style={{ margin: 0, fontSize: '9px', color: 'var(--text-faint)', fontWeight: 600 }}>{hoveredPoint.fecha}</p>
+                          <p style={{ margin: '2px 0 0', fontSize: '12px', fontWeight: 800, color: 'var(--text-main)' }}>
                             {hoveredPoint.value} {metricaProgreso === 'peso' ? 'kg' : '%'}
                           </p>
                         </div>
@@ -489,8 +489,8 @@ export default function SocioProfilePage() {
             <div style={{ marginTop: '1.5rem', maxHeight: '180px', overflowY: 'auto' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
                 {datosGrafico.slice().reverse().map((d, index) => (
-                  <div key={index} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.6rem 1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.04)', fontSize: '0.85rem' }}>
-                    <span style={{ color: 'rgba(255,255,255,0.6)' }}>{d.fecha}</span>
+                  <div key={index} style={{ display: 'flex', justifyContent: 'space-between', padding: '0.6rem 1rem', background: 'var(--subtle-bg)', borderRadius: '8px', border: '1px solid var(--surface-border)', fontSize: '0.85rem' }}>
+                    <span style={{ color: 'var(--text-muted)' }}>{d.fecha}</span>
                     <span style={{ fontWeight: 700, color: metricaProgreso === 'peso' ? '#00f2ff' : '#a855f7' }}>
                       {d.value} {metricaProgreso === 'peso' ? 'kg' : '%'}
                     </span>
@@ -514,17 +514,17 @@ export default function SocioProfilePage() {
 
       {/* Modal Nueva Medición */}
       {modalMedicion && (
-        <div style={{ position:'fixed', inset:0, background:'rgba(0,0,0,0.65)', backdropFilter:'blur(6px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={e=>{ if(e.target===e.currentTarget) setModalMedicion(false); }}>
+        <div style={{ position:'fixed', inset:0, background:'var(--modal-overlay)', backdropFilter:'blur(6px)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1rem' }} onClick={e=>{ if(e.target===e.currentTarget) setModalMedicion(false); }}>
           <div className="glass" style={{ width:'100%', maxWidth:'450px', borderRadius:'20px', padding:'2rem' }}>
             <h3 style={{ fontSize:'1.1rem', fontWeight:700, marginBottom:'1.5rem', display:'flex', alignItems:'center', gap:'10px' }}><Activity size={20} color="var(--primary)"/> Nueva Evaluación Física</h3>
             <form onSubmit={handleGuardarMedicion} style={{ display:'flex', flexDirection:'column', gap:'1rem' }}>
-              <div><label style={{ display:'block', fontSize:'0.8rem', color:'rgba(255,255,255,0.5)', marginBottom:'5px' }}>Peso (kg) *</label><input type="number" step="0.1" value={formMed.peso} onChange={e=>setFormMed({...formMed, peso:e.target.value})} style={{ width:'100%', background:'rgba(0,0,0,0.25)', border:'1px solid rgba(255,255,255,0.1)', padding:'0.8rem', borderRadius:'10px', color:'#fff' }} required/></div>
-              <div><label style={{ display:'block', fontSize:'0.8rem', color:'rgba(255,255,255,0.5)', marginBottom:'5px' }}>Grasa (%)</label><input type="number" step="0.1" value={formMed.grasa} onChange={e=>setFormMed({...formMed, grasa:e.target.value})} style={{ width:'100%', background:'rgba(0,0,0,0.25)', border:'1px solid rgba(255,255,255,0.1)', padding:'0.8rem', borderRadius:'10px', color:'#fff' }}/></div>
-              <div><label style={{ display:'block', fontSize:'0.8rem', color:'rgba(255,255,255,0.5)', marginBottom:'5px' }}>Medidas Corporales / Observaciones</label><input value={formMed.medidas} onChange={e=>setFormMed({...formMed, medidas:e.target.value})} placeholder="Pecho, cintura, etc." style={{ width:'100%', background:'rgba(0,0,0,0.25)', border:'1px solid rgba(255,255,255,0.1)', padding:'0.8rem', borderRadius:'10px', color:'#fff' }}/></div>
-              <div><label style={{ display:'block', fontSize:'0.8rem', color:'rgba(255,255,255,0.5)', marginBottom:'5px' }}>Fecha</label><input type="date" value={formMed.fecha} onChange={e=>setFormMed({...formMed, fecha:e.target.value})} style={{ width:'100%', background:'rgba(0,0,0,0.25)', border:'1px solid rgba(255,255,255,0.1)', padding:'0.8rem', borderRadius:'10px', color:'#fff' }}/></div>
+              <div><label style={{ display:'block', fontSize:'0.8rem', color:'var(--text-muted)', marginBottom:'5px' }}>Peso (kg) *</label><input type="number" step="0.1" value={formMed.peso} onChange={e=>setFormMed({...formMed, peso:e.target.value})} style={{ width:'100%', background:'var(--surface-input)', border:'1px solid var(--surface-border)', padding:'0.8rem', borderRadius:'10px', color:'var(--text-main)' }} required/></div>
+              <div><label style={{ display:'block', fontSize:'0.8rem', color:'var(--text-muted)', marginBottom:'5px' }}>Grasa (%)</label><input type="number" step="0.1" value={formMed.grasa} onChange={e=>setFormMed({...formMed, grasa:e.target.value})} style={{ width:'100%', background:'var(--surface-input)', border:'1px solid var(--surface-border)', padding:'0.8rem', borderRadius:'10px', color:'var(--text-main)' }}/></div>
+              <div><label style={{ display:'block', fontSize:'0.8rem', color:'var(--text-muted)', marginBottom:'5px' }}>Medidas Corporales / Observaciones</label><input value={formMed.medidas} onChange={e=>setFormMed({...formMed, medidas:e.target.value})} placeholder="Pecho, cintura, etc." style={{ width:'100%', background:'var(--surface-input)', border:'1px solid var(--surface-border)', padding:'0.8rem', borderRadius:'10px', color:'var(--text-main)' }}/></div>
+              <div><label style={{ display:'block', fontSize:'0.8rem', color:'var(--text-muted)', marginBottom:'5px' }}>Fecha</label><input type="date" value={formMed.fecha} onChange={e=>setFormMed({...formMed, fecha:e.target.value})} style={{ width:'100%', background:'var(--surface-input)', border:'1px solid var(--surface-border)', padding:'0.8rem', borderRadius:'10px', color:'var(--text-main)' }}/></div>
               
               <div style={{ display:'flex', gap:'10px', marginTop:'1rem' }}>
-                <button type="button" onClick={()=>setModalMedicion(false)} style={{ flex:1, padding:'1rem', borderRadius:'12px', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.1)', color:'#fff', cursor:'pointer' }}>Cancelar</button>
+                <button type="button" onClick={()=>setModalMedicion(false)} style={{ flex:1, padding:'1rem', borderRadius:'12px', background:'var(--btn-secondary-bg)', border:'1px solid var(--btn-secondary-border)', color:'var(--btn-secondary-text)', cursor:'pointer' }}>Cancelar</button>
                 <button type="submit" disabled={formLoading} style={{ flex:2, padding:'1rem', borderRadius:'12px', background:'linear-gradient(135deg, var(--primary), var(--secondary))', border:'none', color:'#000', fontWeight:700, cursor:'pointer' }}>{formLoading ? 'Guardando...' : 'Guardar Evaluación'}</button>
               </div>
             </form>

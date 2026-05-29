@@ -300,15 +300,15 @@ export default function RutinasPage() {
   // ─── Estilos compartidos ──────────────────────────────────────────────────
 
   const inputStyle: React.CSSProperties = {
-    width: '100%', background: 'rgba(0,0,0,0.3)',
-    border: '1px solid rgba(255,255,255,0.12)',
+    width: '100%', background: 'var(--surface-input)',
+    border: '1px solid var(--surface-border)',
     padding: '0.75rem 1rem', borderRadius: '10px',
-    color: '#fff', outline: 'none', fontSize: '0.9rem',
+    color: 'var(--text-main)', outline: 'none', fontSize: '0.9rem',
   };
 
   const labelStyle: React.CSSProperties = {
     display: 'block', fontSize: '0.75rem',
-    color: 'rgba(255,255,255,0.45)', marginBottom: '6px', fontWeight: 600,
+    color: 'var(--text-muted)', marginBottom: '6px', fontWeight: 600,
     textTransform: 'uppercase', letterSpacing: '0.05em',
   };
 
@@ -321,15 +321,15 @@ export default function RutinasPage() {
       {toast && (
         <div style={{
           position: 'fixed', bottom: '2rem', right: '2rem', zIndex: 9999,
-          background: toast.tipo === 'ok' ? 'rgba(0,200,120,0.18)' : 'rgba(255,60,60,0.18)',
-          border: `1px solid ${toast.tipo === 'ok' ? 'rgba(0,200,120,0.5)' : 'rgba(255,60,60,0.5)'}`,
+          background: toast.tipo === 'ok' ? '#10b981' : '#ef4444',
           color: '#fff', padding: '1rem 1.5rem', borderRadius: '14px',
-          backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', gap: '10px',
+          display: 'flex', alignItems: 'center', gap: '10px',
           boxShadow: '0 8px 32px rgba(0,0,0,0.3)', maxWidth: '360px',
+          fontWeight: 600,
         }}>
           {toast.tipo === 'ok'
             ? <span style={{ fontSize: '1.2rem' }}>✅</span>
-            : <AlertCircle size={20} color="#ff4757" />
+            : <AlertCircle size={20} color="#fff" />
           }
           {toast.msg}
         </div>
@@ -341,7 +341,7 @@ export default function RutinasPage() {
           <h2 className={styles.sectionTitle} style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '0.4rem' }}>
             <ClipboardList size={24} color="var(--primary)" /> Gestión de Rutinas
           </h2>
-          <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.9rem' }}>
+          <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem' }}>
             Crea planes de entrenamiento · agrega ejercicios del catálogo · asigna a socios
           </p>
         </div>
@@ -367,7 +367,7 @@ export default function RutinasPage() {
       {/* Barra de filtros */}
       <div className="glass" style={{ padding: '1rem 1.5rem', borderRadius: '16px', display: 'flex', gap: '1rem', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap' }}>
         <div style={{ position: 'relative', flex: 1, minWidth: '220px' }}>
-          <Search size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.35)' }} />
+          <Search size={16} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-faint)' }} />
           <input
             type="text" placeholder="Buscar rutina..."
             value={busqueda} onChange={e => setBusqueda(e.target.value)}
@@ -384,27 +384,27 @@ export default function RutinasPage() {
         <button
           onClick={cargarDatos}
           title="Refrescar"
-          style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.75rem', borderRadius: '10px', color: '#fff', cursor: 'pointer' }}
+          style={{ background: 'var(--btn-secondary-bg)', border: '1px solid var(--btn-secondary-border)', padding: '0.75rem', borderRadius: '10px', color: 'var(--text-main)', cursor: 'pointer' }}
         >
           <RefreshCw size={16} className={cargando ? styles.spin : ''} />
         </button>
-        <span style={{ color: 'rgba(255,255,255,0.35)', fontSize: '0.82rem' }}>{filtradas.length} rutina(s)</span>
+        <span style={{ color: 'var(--text-faint)', fontSize: '0.82rem' }}>{filtradas.length} rutina(s)</span>
       </div>
 
       {/* Error global */}
       {error && (
-        <div style={{ padding: '1rem', background: 'rgba(255,60,60,0.1)', border: '1px solid rgba(255,60,60,0.3)', borderRadius: '12px', color: '#ff6b6b', marginBottom: '1.5rem', display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <div style={{ padding: '1rem', background: 'rgba(239,68,68,0.1)', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '12px', color: '#f87171', marginBottom: '1.5rem', display: 'flex', gap: '10px', alignItems: 'center' }}>
           <AlertCircle size={18} /> {error}
         </div>
       )}
 
       {/* Grid de rutinas */}
       {cargando ? (
-        <div style={{ padding: '3rem', textAlign: 'center', color: 'rgba(255,255,255,0.35)' }}>
+        <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-faint)' }}>
           Cargando rutinas...
         </div>
       ) : filtradas.length === 0 ? (
-        <div style={{ padding: '3rem', textAlign: 'center', color: 'rgba(255,255,255,0.35)' }}>
+        <div style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-faint)' }}>
           No se encontraron rutinas. {canCreate && 'Crea la primera con el botón "Nueva Rutina".'}
         </div>
       ) : (
@@ -428,7 +428,7 @@ export default function RutinasPage() {
                         {nivel}
                       </span>
                       {rutina.objetivo && (
-                        <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                        <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '3px' }}>
                           <Target size={11} /> {rutina.objetivo}
                         </span>
                       )}
@@ -437,16 +437,16 @@ export default function RutinasPage() {
                 </div>
 
                 {rutina.descripcion && (
-                  <p style={{ padding: '0 1.5rem 1rem', fontSize: '0.85rem', color: 'rgba(255,255,255,0.6)', lineHeight: 1.5 }}>
+                  <p style={{ padding: '0 1.5rem 1rem', fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
                     {rutina.descripcion}
                   </p>
                 )}
 
                 {/* Footer card */}
-                <div style={{ marginTop: 'auto', borderTop: '1px solid rgba(255,255,255,0.07)', padding: '0.9rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
+                <div style={{ marginTop: 'auto', borderTop: '1px solid var(--surface-border)', padding: '0.9rem 1.5rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                   <button
                     onClick={() => setExpandida(abierta ? null : rutina.id_rutina)}
-                    style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.55)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', padding: 0 }}
+                    style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.82rem', padding: 0 }}
                   >
                     {abierta ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                     {numEj} ejercicio{numEj !== 1 ? 's' : ''}
@@ -478,14 +478,14 @@ export default function RutinasPage() {
 
                 {/* Detalle de ejercicios (expandible) */}
                 {abierta && (
-                  <div style={{ borderTop: '1px solid rgba(255,255,255,0.07)', padding: '1rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                  <div style={{ borderTop: '1px solid var(--surface-border)', padding: '1rem 1.5rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                     {numEj === 0 ? (
-                      <p style={{ fontSize: '0.82rem', color: 'rgba(255,255,255,0.35)', textAlign: 'center', padding: '0.5rem' }}>
+                      <p style={{ fontSize: '0.82rem', color: 'var(--text-faint)', textAlign: 'center', padding: '0.5rem' }}>
                         Sin ejercicios. {canCreate && <span style={{ color: 'var(--primary)', cursor: 'pointer' }} onClick={() => abrirCatalogo(rutina)}>Agregar desde catálogo →</span>}
                       </p>
                     ) : (
                       rutina.rutina_ejercicios!.map((re, idx) => (
-                        <div key={re.id} style={{ background: 'rgba(0,0,0,0.2)', borderRadius: '10px', padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                        <div key={re.id} style={{ background: 'var(--subtle-bg)', borderRadius: '10px', padding: '0.75rem 1rem', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ fontWeight: 700, fontSize: '0.88rem', color: 'var(--primary)' }}>
                               {idx + 1}. {re.ejercicio.nombre}
@@ -501,22 +501,22 @@ export default function RutinasPage() {
                             )}
                           </div>
                           {re.ejercicio.grupo_muscular && (
-                            <span style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.4)' }}>
+                            <span style={{ fontSize: '0.72rem', color: 'var(--text-faint)' }}>
                               💪 {re.ejercicio.grupo_muscular}
                             </span>
                           )}
                           <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '2px' }}>
-                            <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                               <RotateCcw size={12} color="var(--primary)" />
                               {re.series ?? '—'} series × {re.repeticiones ?? '—'} reps
                             </span>
-                            <span style={{ fontSize: '0.78rem', color: 'rgba(255,255,255,0.7)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                               <Timer size={12} color="#b026ff" />
                               Descanso: {fmtDescanso(re.descanso)}
                             </span>
                           </div>
                           {re.observaciones && (
-                            <p style={{ fontSize: '0.76rem', color: 'rgba(255,255,255,0.45)', marginTop: '2px', fontStyle: 'italic' }}>
+                            <p style={{ fontSize: '0.76rem', color: 'var(--text-faint)', marginTop: '2px', fontStyle: 'italic' }}>
                               📝 {re.observaciones}
                             </p>
                           )}
@@ -536,7 +536,7 @@ export default function RutinasPage() {
       ══════════════════════════════════════════════════════════════════════ */}
       {modalCatalogo && rutinaEditando && (
         <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.8)', backdropFilter: 'blur(10px)', zIndex: 1000, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '1.5rem', overflowY: 'auto' }}
+          style={{ position: 'fixed', inset: 0, background: 'var(--modal-overlay)', backdropFilter: 'blur(10px)', zIndex: 1000, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '1.5rem', overflowY: 'auto' }}
           onClick={() => setModalCatalogo(false)}
         >
           <div
@@ -549,9 +549,9 @@ export default function RutinasPage() {
               <h3 style={{ fontSize: '1.15rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <BookOpen size={20} color="var(--primary)" /> Catálogo de Ejercicios
               </h3>
-              <button onClick={() => setModalCatalogo(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}><X size={20} /></button>
+              <button onClick={() => setModalCatalogo(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><X size={20} /></button>
             </div>
-            <p style={{ fontSize: '0.83rem', color: 'rgba(255,255,255,0.45)', marginBottom: '1.5rem' }}>
+            <p style={{ fontSize: '0.83rem', color: 'var(--text-faint)', marginBottom: '1.5rem' }}>
               Rutina: <span style={{ color: 'var(--primary)', fontWeight: 700 }}>{rutinaEditando.nombre}</span>
               {' '}· {rutinaEditando.rutina_ejercicios?.length ?? 0} ejercicio(s) actuales
             </p>
@@ -559,7 +559,7 @@ export default function RutinasPage() {
             {/* Barra de búsqueda catálogo */}
             <div style={{ display: 'flex', gap: '0.75rem', marginBottom: '1.25rem', flexWrap: 'wrap' }}>
               <div style={{ position: 'relative', flex: 1, minWidth: '180px' }}>
-                <Search size={14} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'rgba(255,255,255,0.3)' }} />
+                <Search size={14} style={{ position: 'absolute', left: '1rem', top: '50%', transform: 'translateY(-50%)', color: 'var(--text-faint)' }} />
                 <input
                   type="text" placeholder="Buscar ejercicio..."
                   value={catalogoBusqueda} onChange={e => setCatalogoBusqueda(e.target.value)}
@@ -577,7 +577,7 @@ export default function RutinasPage() {
             {/* Ejercicios en la rutina (actuales) */}
             {rutinaEditando.rutina_ejercicios && rutinaEditando.rutina_ejercicios.length > 0 && (
               <div style={{ marginBottom: '1.5rem' }}>
-                <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.6rem' }}>
+                <p style={{ fontSize: '0.75rem', color: 'var(--text-faint)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.6rem' }}>
                   En esta rutina
                 </p>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -599,12 +599,12 @@ export default function RutinasPage() {
             )}
 
             {/* Grid catálogo */}
-            <p style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem' }}>
+            <p style={{ fontSize: '0.75rem', color: 'var(--text-faint)', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '0.75rem' }}>
               Catálogo ({ejerciciosCatalogoBusq.length} ejercicio{ejerciciosCatalogoBusq.length !== 1 ? 's' : ''})
             </p>
 
             {ejerciciosCatalogoBusq.length === 0 ? (
-              <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', padding: '2rem', fontSize: '0.85rem' }}>
+              <p style={{ textAlign: 'center', color: 'var(--text-faint)', padding: '2rem', fontSize: '0.85rem' }}>
                 No se encontraron ejercicios con ese filtro.
               </p>
             ) : (
@@ -619,25 +619,25 @@ export default function RutinasPage() {
                     <div
                       key={ej.id_ejercicio}
                       style={{
-                        background: enRutina ? 'rgba(0,242,255,0.06)' : 'rgba(0,0,0,0.25)',
-                        border: enRutina ? '1px solid rgba(0,242,255,0.25)' : '1px solid rgba(255,255,255,0.08)',
+                        background: enRutina ? 'var(--primary-glow)' : 'var(--subtle-bg)',
+                        border: enRutina ? '1px solid var(--primary)' : '1px solid var(--surface-border)',
                         borderRadius: '12px', padding: '0.85rem', display: 'flex', flexDirection: 'column', gap: '6px',
                         transition: 'all 0.2s',
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '6px' }}>
-                        <span style={{ fontWeight: 700, fontSize: '0.85rem', color: enRutina ? 'var(--primary)' : '#fff', lineHeight: 1.3 }}>
+                        <span style={{ fontWeight: 700, fontSize: '0.85rem', color: enRutina ? 'var(--primary)' : 'var(--text-main)', lineHeight: 1.3 }}>
                           {ej.nombre}
                         </span>
                         {enRutina && <CheckCircle size={14} color="var(--primary)" style={{ flexShrink: 0 }} />}
                       </div>
                       {ej.grupo_muscular && (
-                        <span style={{ fontSize: '0.7rem', color: 'rgba(255,255,255,0.4)', background: 'rgba(255,255,255,0.05)', padding: '2px 7px', borderRadius: '10px', alignSelf: 'flex-start' }}>
+                        <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', background: 'var(--subtle-bg-deeper)', padding: '2px 7px', borderRadius: '10px', alignSelf: 'flex-start' }}>
                           💪 {ej.grupo_muscular}
                         </span>
                       )}
                       {ej.descripcion && (
-                        <p style={{ fontSize: '0.72rem', color: 'rgba(255,255,255,0.35)', lineHeight: 1.4, marginTop: '2px' }}>
+                        <p style={{ fontSize: '0.72rem', color: 'var(--text-faint)', lineHeight: 1.4, marginTop: '2px' }}>
                           {ej.descripcion.length > 60 ? ej.descripcion.slice(0, 60) + '…' : ej.descripcion}
                         </p>
                       )}
@@ -654,7 +654,7 @@ export default function RutinasPage() {
                         style={{
                           marginTop: '4px',
                           padding: '0.45rem 0.75rem', borderRadius: '8px', border: 'none',
-                          background: enRutina ? 'rgba(255,80,80,0.12)' : 'rgba(0,242,255,0.12)',
+                          background: enRutina ? 'rgba(255,80,80,0.12)' : 'var(--primary-glow)',
                           color: enRutina ? '#ff6b6b' : 'var(--primary)',
                           cursor: agregando ? 'not-allowed' : 'pointer',
                           fontWeight: 700, fontSize: '0.78rem',
@@ -684,7 +684,7 @@ export default function RutinasPage() {
       ══════════════════════════════════════════════════════════════════════ */}
       {modalCrear && (
         <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '1.5rem', overflowY: 'auto' }}
+          style={{ position: 'fixed', inset: 0, background: 'var(--modal-overlay)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '1.5rem', overflowY: 'auto' }}
           onClick={() => setModalCrear(false)}
         >
           <div
@@ -696,7 +696,7 @@ export default function RutinasPage() {
               <h3 style={{ fontSize: '1.2rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <ClipboardList size={20} color="var(--primary)" /> Nueva Rutina
               </h3>
-              <button onClick={() => setModalCrear(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}><X size={20} /></button>
+              <button onClick={() => setModalCrear(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><X size={20} /></button>
             </div>
 
             <form onSubmit={handleCrearRutina} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
@@ -731,11 +731,11 @@ export default function RutinasPage() {
               </div>
 
               {/* Sección Ejercicios */}
-              <div style={{ border: '1px solid rgba(255,255,255,0.1)', borderRadius: '14px', overflow: 'hidden' }}>
-                <div style={{ background: 'rgba(0,242,255,0.06)', padding: '0.85rem 1.2rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <div style={{ border: '1px solid var(--surface-border)', borderRadius: '14px', overflow: 'hidden' }}>
+                <div style={{ background: 'var(--subtle-bg)', padding: '0.85rem 1.2rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Dumbbell size={16} color="var(--primary)" />
                   <span style={{ fontWeight: 700, fontSize: '0.9rem' }}>Ejercicios de la Rutina</span>
-                  <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>{ejerciciosForm.length} agregado(s)</span>
+                  <span style={{ marginLeft: 'auto', fontSize: '0.75rem', color: 'var(--text-faint)' }}>{ejerciciosForm.length} agregado(s)</span>
                 </div>
 
                 <div style={{ padding: '1rem 1.2rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
@@ -760,13 +760,13 @@ export default function RutinasPage() {
                   </div>
 
                   {ejerciciosForm.length === 0 ? (
-                    <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.3)', fontSize: '0.82rem', padding: '0.5rem' }}>
+                    <p style={{ textAlign: 'center', color: 'var(--text-faint)', fontSize: '0.82rem', padding: '0.5rem' }}>
                       Selecciona ejercicios del catálogo y configura series, repeticiones y descanso.
                     </p>
                   ) : (
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                       {ejerciciosForm.map((ej, idx) => (
-                        <div key={ej.id_ejercicio} style={{ background: 'rgba(0,0,0,0.25)', borderRadius: '12px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        <div key={ej.id_ejercicio} style={{ background: 'var(--subtle-bg)', borderRadius: '12px', padding: '1rem', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ fontWeight: 700, fontSize: '0.9rem', color: 'var(--primary)' }}>{idx + 1}. {ej.nombre}</span>
                             <button type="button" onClick={() => quitarEjercicio(idx)} style={{ background: 'none', border: 'none', color: 'rgba(255,80,80,0.7)', cursor: 'pointer' }}>
@@ -814,7 +814,7 @@ export default function RutinasPage() {
       ══════════════════════════════════════════════════════════════════════ */}
       {modalAsignar && (
         <div
-          style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
+          style={{ position: 'fixed', inset: 0, background: 'var(--modal-overlay)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}
           onClick={() => setModalAsignar(false)}
         >
           <div
@@ -826,7 +826,7 @@ export default function RutinasPage() {
               <h3 style={{ fontSize: '1.1rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <Send size={18} color="#b026ff" /> Asignar Rutina a Socio
               </h3>
-              <button onClick={() => setModalAsignar(false)} style={{ background: 'none', border: 'none', color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}><X size={20} /></button>
+              <button onClick={() => setModalAsignar(false)} style={{ background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer' }}><X size={20} /></button>
             </div>
 
             <form onSubmit={handleAsignar} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
@@ -853,7 +853,7 @@ export default function RutinasPage() {
                 <input required type="date" value={formAsignar.fecha} onChange={e => setFormAsignar(f => ({ ...f, fecha: e.target.value }))} style={inputStyle} />
               </div>
               <div style={{ display: 'flex', gap: '10px', marginTop: '0.5rem' }}>
-                <button type="button" onClick={() => setModalAsignar(false)} style={{ flex: 1, padding: '0.85rem', borderRadius: '10px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', cursor: 'pointer' }}>
+                <button type="button" onClick={() => setModalAsignar(false)} style={{ flex: 1, padding: '0.85rem', borderRadius: '10px', background: 'var(--btn-secondary-bg)', border: '1px solid var(--btn-secondary-border)', color: 'var(--btn-secondary-text)', cursor: 'pointer' }}>
                   Cancelar
                 </button>
                 <button
