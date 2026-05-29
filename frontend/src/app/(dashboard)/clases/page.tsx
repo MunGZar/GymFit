@@ -265,13 +265,13 @@ export default function ClasesPage() {
             <Calendar size={24} color="var(--primary)" />
             Calendario de Clases Grupales
           </h2>
-          <p style={{ color: 'rgba(255, 255, 255, 0.6)' }}>
+          <p style={{ color: 'var(--text-muted)' }}>
             Programación y control de reservas en tiempo real.
           </p>
         </div>
 
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button onClick={cargarDatos} className="glass" style={{ padding: '0.8rem', borderRadius: '12px', color: '#fff', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <button onClick={cargarDatos} className="glass" style={{ padding: '0.8rem', borderRadius: '12px', color: 'var(--text-main)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <RefreshCw size={20} className={cargando ? styles.spin : ''} />
           </button>
           
@@ -301,7 +301,7 @@ export default function ClasesPage() {
               setFormInscribirAdmin({ id_socio: socios[0]?.id_socio?.toString() || '', id_clase: clases[0]?.id_clase?.toString() || '' });
               setModalInscribirAdmin(true);
             }} style={{ 
-              background: 'rgba(255,255,255,0.06)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)',
+              background: 'var(--btn-secondary-bg)', color: 'var(--btn-secondary-text)', border: '1px solid var(--btn-secondary-border)',
               padding: '0.8rem 1.5rem', borderRadius: '12px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer'
             }}>
               <Users size={18} />
@@ -320,7 +320,7 @@ export default function ClasesPage() {
           <AlertTriangle size={24} color="#f87171" style={{ flexShrink: 0 }} />
           <div>
             <h4 style={{ color: '#f87171', margin: 0, fontWeight: 700, fontSize: '0.95rem' }}>No tienes una membresía activa</h4>
-            <p style={{ color: 'rgba(255,255,255,0.6)', margin: '4px 0 0', fontSize: '0.85rem' }}>
+            <p style={{ color: 'var(--text-muted)', margin: '4px 0 0', fontSize: '0.85rem' }}>
               Para poder reservar tu cupo en clases grupales, debes tener un plan vinculado y activo. Por favor, acércate a la recepción o ponte en contacto con administración.
             </p>
           </div>
@@ -336,14 +336,14 @@ export default function ClasesPage() {
       {/* Clases Schedule */}
       <div className="glass" style={{ padding: '2rem', borderRadius: '16px' }}>
         {cargando ? (
-          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '3rem 0', gap: '1rem', color: 'rgba(255,255,255,0.4)' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: '3rem 0', gap: '1rem', color: 'var(--text-faint)' }}>
             <RefreshCw size={24} className={styles.spin} />
             <p>Cargando cronograma...</p>
           </div>
         ) : clases.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '3rem 0', color: 'rgba(255,255,255,0.4)' }}>
+          <div style={{ textAlign: 'center', padding: '3rem 0', color: 'var(--text-faint)' }}>
             <Calendar size={48} style={{ marginBottom: '1rem', opacity: 0.3 }} />
-            <p style={{ fontSize: '1.1rem', fontWeight: 600 }}>No hay clases programadas</p>
+            <p style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-main)' }}>No hay clases programadas</p>
             <p style={{ fontSize: '0.85rem', marginTop: '5px' }}>{isAdminOrTrainer ? 'Presiona "Programar Clase" para agendar la primera.' : 'Vuelve más tarde para ver el cronograma.'}</p>
           </div>
         ) : (
@@ -360,26 +360,26 @@ export default function ClasesPage() {
               return (
                 <div key={cls.id_clase} style={{ 
                   display: 'flex', alignItems: 'center', padding: '1.25rem 1.5rem', 
-                  background: 'rgba(255,255,255,0.02)', borderRadius: '16px', 
-                  border: '1px solid rgba(255,255,255,0.05)',
+                  background: 'var(--subtle-bg)', borderRadius: '16px', 
+                  border: '1px solid var(--surface-border)',
                   borderLeft: `4px solid ${miInscripcion ? 'var(--primary)' : esLleno ? '#ef4444' : '#10b981'}`,
                   gap: '1.5rem', flexWrap: 'wrap', transition: 'all 0.2s'
                 }}>
                   {/* Hora y Fecha */}
                   <div style={{ minWidth: '160px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#fff', fontWeight: 700, fontSize: '0.95rem', marginBottom: '4px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-main)', fontWeight: 700, fontSize: '0.95rem', marginBottom: '4px' }}>
                       <Clock size={15} color="var(--primary)" />
                       <span>{formatearHora(cls.horario)}</span>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'rgba(255,255,255,0.4)', fontSize: '0.78rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-faint)', fontSize: '0.78rem' }}>
                       <span>{formatearFecha(cls.horario)}</span>
                     </div>
                   </div>
 
                   {/* Nombre y Entrenador */}
                   <div style={{ flex: 1, minWidth: '200px' }}>
-                    <h3 style={{ fontSize: '1.15rem', color: '#fff', fontWeight: 700, margin: 0 }}>{cls.nombre}</h3>
-                    <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '0.85rem', margin: '4px 0 0', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <h3 style={{ fontSize: '1.15rem', color: 'var(--text-main)', fontWeight: 700, margin: 0 }}>{cls.nombre}</h3>
+                    <p style={{ color: 'var(--text-muted)', fontSize: '0.85rem', margin: '4px 0 0', display: 'flex', alignItems: 'center', gap: '5px' }}>
                       <User size={12} /> Instructor: {cls.entrenador?.usuario?.nombre || 'General'}
                     </p>
                   </div>
@@ -387,15 +387,15 @@ export default function ClasesPage() {
                   {/* Aforo y Disponibilidad */}
                   <div style={{ minWidth: '130px' }}>
                     <span style={{ 
-                      display: 'inline-flex', alignItems: 'center', gap: '6px',
-                      padding: '4px 10px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: '700',
-                      background: esLleno ? 'rgba(239, 68, 68, 0.12)' : esMitad ? 'rgba(245, 158, 11, 0.12)' : 'rgba(16, 185, 129, 0.12)',
-                      color: esLleno ? '#f87171' : esMitad ? '#fbbf24' : '#34d399'
+                       display: 'inline-flex', alignItems: 'center', gap: '6px',
+                       padding: '4px 10px', borderRadius: '20px', fontSize: '0.8rem', fontWeight: '700',
+                       background: esLleno ? 'rgba(239, 68, 68, 0.12)' : esMitad ? 'rgba(245, 158, 11, 0.12)' : 'rgba(16, 185, 129, 0.12)',
+                       color: esLleno ? '#f87171' : esMitad ? '#fbbf24' : '#34d399'
                     }}>
                       <Users size={12} />
                       Cupo: {inscritosCount}/{cls.cupo}
                     </span>
-                    <p style={{ margin: '4px 0 0 5px', fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>
+                    <p style={{ margin: '4px 0 0 5px', fontSize: '0.75rem', color: 'var(--text-faint)' }}>
                       {esLleno ? 'Agotado 🚫' : `Quedan ${cuposDisponibles} libres`}
                     </p>
                   </div>
@@ -419,9 +419,9 @@ export default function ClasesPage() {
                           onClick={() => handleReservarCupo(cls)}
                           disabled={actionLoading || esLleno || !hasActivePlan}
                           style={{
-                            background: esLleno || !hasActivePlan ? 'rgba(255,255,255,0.03)' : 'var(--primary)',
-                            color: esLleno || !hasActivePlan ? 'rgba(255,255,255,0.2)' : '#000',
-                            border: esLleno || !hasActivePlan ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                            background: esLleno || !hasActivePlan ? 'var(--subtle-bg)' : 'var(--primary)',
+                            color: esLleno || !hasActivePlan ? 'var(--text-faint)' : '#000',
+                            border: esLleno || !hasActivePlan ? '1px solid var(--surface-border)' : 'none',
                             padding: '0.5rem 1rem', borderRadius: '8px', cursor: esLleno || !hasActivePlan ? 'not-allowed' : 'pointer',
                             fontSize: '0.8rem', fontWeight: 700
                           }}
@@ -434,8 +434,8 @@ export default function ClasesPage() {
                         <button 
                           onClick={() => verParticipantes(cls)}
                           style={{ 
-                            padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.1)',
-                            background: 'rgba(255,255,255,0.05)', color: '#fff', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600
+                            padding: '0.5rem 1rem', borderRadius: '8px', border: '1px solid var(--btn-secondary-border)',
+                            background: 'var(--btn-secondary-bg)', color: 'var(--btn-secondary-text)', cursor: 'pointer', fontSize: '0.8rem', fontWeight: 600
                           }}
                         >
                           Ver Lista
@@ -466,7 +466,7 @@ export default function ClasesPage() {
 
       {/* Modal Programar Clase (HU-14) */}
       {modalCrear && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setModalCrear(false)}>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--modal-overlay)', backdropFilter: 'blur(6px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setModalCrear(false)}>
           <div className="glass" style={{ width: '100%', maxWidth: '450px', borderRadius: '20px', padding: '2rem' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Calendar size={20} color="var(--primary)" />
@@ -474,24 +474,24 @@ export default function ClasesPage() {
             </h3>
             <form onSubmit={handleCrearClase} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>Nombre de la Clase *</label>
-                <input required type="text" placeholder="Ej: Spinning Pro, Zumba, CrossFit" value={formCrear.nombre} onChange={e=>setFormCrear({...formCrear, nombre: e.target.value})} style={{ width: '100%', background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.8rem', borderRadius: '10px', color: '#fff', outline: 'none' }} />
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '6px' }}>Nombre de la Clase *</label>
+                <input required type="text" placeholder="Ej: Spinning Pro, Zumba, CrossFit" value={formCrear.nombre} onChange={e=>setFormCrear({...formCrear, nombre: e.target.value})} style={{ width: '100%', background: 'var(--surface-input)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: '10px', color: 'var(--text-main)', outline: 'none' }} />
               </div>
               
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>Horario (Fecha y Hora) *</label>
-                <input required type="datetime-local" value={formCrear.horario} onChange={e=>setFormCrear({...formCrear, horario: e.target.value})} style={{ width: '100%', background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.8rem', borderRadius: '10px', color: '#fff', outline: 'none' }} />
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '6px' }}>Horario (Fecha y Hora) *</label>
+                <input required type="datetime-local" value={formCrear.horario} onChange={e=>setFormCrear({...formCrear, horario: e.target.value})} style={{ width: '100%', background: 'var(--surface-input)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: '10px', color: 'var(--text-main)', outline: 'none' }} />
               </div>
 
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>Cupo Máximo *</label>
-                  <input required type="number" min="1" value={formCrear.cupo} onChange={e=>setFormCrear({...formCrear, cupo: e.target.value})} style={{ width: '100%', background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.8rem', borderRadius: '10px', color: '#fff', outline: 'none' }} />
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '6px' }}>Cupo Máximo *</label>
+                  <input required type="number" min="1" value={formCrear.cupo} onChange={e=>setFormCrear({...formCrear, cupo: e.target.value})} style={{ width: '100%', background: 'var(--surface-input)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: '10px', color: 'var(--text-main)', outline: 'none' }} />
                 </div>
                 
                 <div>
-                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>Instructor / Entrenador *</label>
-                  <select value={formCrear.id_entrenador} onChange={e=>setFormCrear({...formCrear, id_entrenador: e.target.value})} style={{ width: '100%', background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.8rem', borderRadius: '10px', color: '#fff', outline: 'none' }}>
+                  <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '6px' }}>Instructor / Entrenador *</label>
+                  <select value={formCrear.id_entrenador} onChange={e=>setFormCrear({...formCrear, id_entrenador: e.target.value})} style={{ width: '100%', background: 'var(--surface-input)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: '10px', color: 'var(--text-main)', outline: 'none' }}>
                     {entrenadores.map(ent => (
                       <option key={ent.id_entrenador} value={ent.id_entrenador}>{ent.usuario?.nombre}</option>
                     ))}
@@ -500,7 +500,7 @@ export default function ClasesPage() {
               </div>
 
               <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }}>
-                <button type="button" onClick={() => setModalCrear(false)} style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '0.8rem', borderRadius: '10px', cursor: 'pointer' }}>
+                <button type="button" onClick={() => setModalCrear(false)} style={{ flex: 1, background: 'var(--btn-secondary-bg)', border: '1px solid var(--btn-secondary-border)', color: 'var(--btn-secondary-text)', padding: '0.8rem', borderRadius: '10px', cursor: 'pointer' }}>
                   Cancelar
                 </button>
                 <button type="submit" disabled={actionLoading} style={{ flex: 2, background: 'var(--primary)', border: 'none', color: '#000', padding: '0.8rem', borderRadius: '10px', fontWeight: 700, cursor: 'pointer', opacity: actionLoading ? 0.5 : 1 }}>
@@ -514,7 +514,7 @@ export default function ClasesPage() {
 
       {/* Modal Inscribir Socio Manualmente (HU-15 por Recepcionista) */}
       {modalInscribirAdmin && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setModalInscribirAdmin(false)}>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--modal-overlay)', backdropFilter: 'blur(6px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setModalInscribirAdmin(false)}>
           <div className="glass" style={{ width: '100%', maxWidth: '450px', borderRadius: '20px', padding: '2rem' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ fontSize: '1.2rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Users size={20} color="var(--primary)" />
@@ -522,8 +522,8 @@ export default function ClasesPage() {
             </h3>
             <form onSubmit={handleInscribirSocioAdmin} style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>Seleccionar Socio *</label>
-                <select value={formInscribirAdmin.id_socio} onChange={e=>setFormInscribirAdmin({...formInscribirAdmin, id_socio: e.target.value})} style={{ width: '100%', background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.8rem', borderRadius: '10px', color: '#fff', outline: 'none' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '6px' }}>Seleccionar Socio *</label>
+                <select value={formInscribirAdmin.id_socio} onChange={e=>setFormInscribirAdmin({...formInscribirAdmin, id_socio: e.target.value})} style={{ width: '100%', background: 'var(--surface-input)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: '10px', color: 'var(--text-main)', outline: 'none' }}>
                   {socios.map(s => (
                     <option key={s.id_socio} value={s.id_socio}>{s.usuario?.nombre} ({s.usuario?.identificacion})</option>
                   ))}
@@ -531,8 +531,8 @@ export default function ClasesPage() {
               </div>
 
               <div>
-                <label style={{ display: 'block', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginBottom: '6px' }}>Seleccionar Clase Grupal *</label>
-                <select value={formInscribirAdmin.id_clase} onChange={e=>setFormInscribirAdmin({...formInscribirAdmin, id_clase: e.target.value})} style={{ width: '100%', background: 'rgba(0,0,0,0.25)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.8rem', borderRadius: '10px', color: '#fff', outline: 'none' }}>
+                <label style={{ display: 'block', fontSize: '0.8rem', color: 'var(--text-muted)', marginBottom: '6px' }}>Seleccionar Clase Grupal *</label>
+                <select value={formInscribirAdmin.id_clase} onChange={e=>setFormInscribirAdmin({...formInscribirAdmin, id_clase: e.target.value})} style={{ width: '100%', background: 'var(--surface-input)', border: '1px solid var(--surface-border)', padding: '0.8rem', borderRadius: '10px', color: 'var(--text-main)', outline: 'none' }}>
                   {clases.map(c => (
                     <option key={c.id_clase} value={c.id_clase}>{c.nombre} - {formatearHora(c.horario)} ({formatearFecha(c.horario)})</option>
                   ))}
@@ -540,7 +540,7 @@ export default function ClasesPage() {
               </div>
 
               <div style={{ display: 'flex', gap: '10px', marginTop: '1rem' }}>
-                <button type="button" onClick={() => setModalInscribirAdmin(false)} style={{ flex: 1, background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', color: '#fff', padding: '0.8rem', borderRadius: '10px', cursor: 'pointer' }}>
+                <button type="button" onClick={() => setModalInscribirAdmin(false)} style={{ flex: 1, background: 'var(--btn-secondary-bg)', border: '1px solid var(--btn-secondary-border)', color: 'var(--btn-secondary-text)', padding: '0.8rem', borderRadius: '10px', cursor: 'pointer' }}>
                   Cancelar
                 </button>
                 <button type="submit" disabled={actionLoading} style={{ flex: 2, background: 'linear-gradient(135deg, var(--primary), var(--secondary))', border: 'none', color: '#000', padding: '0.8rem', borderRadius: '10px', fontWeight: 700, cursor: 'pointer', opacity: actionLoading ? 0.5 : 1 }}>
@@ -554,23 +554,23 @@ export default function ClasesPage() {
 
       {/* Modal Lista de Participantes */}
       {modalDetalles && claseSeleccionada && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(6px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setModalDetalles(false)}>
+        <div style={{ position: 'fixed', inset: 0, background: 'var(--modal-overlay)', backdropFilter: 'blur(6px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }} onClick={() => setModalDetalles(false)}>
           <div className="glass" style={{ width: '100%', maxWidth: '500px', borderRadius: '20px', padding: '2rem' }} onClick={e => e.stopPropagation()}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.5rem' }}>{claseSeleccionada.nombre}</h3>
-            <p style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.85rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <p style={{ color: 'var(--text-faint)', fontSize: '0.85rem', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8px' }}>
               <Clock size={14} /> {formatearHora(claseSeleccionada.horario)} | {formatearFecha(claseSeleccionada.horario)}
             </p>
 
-            <h4 style={{ fontSize: '0.9rem', color: '#fff', marginBottom: '10px', borderBottom: '1px solid rgba(255,255,255,0.08)', paddingBottom: '5px' }}>
+            <h4 style={{ fontSize: '0.9rem', color: 'var(--text-main)', marginBottom: '10px', borderBottom: '1px solid var(--surface-border)', paddingBottom: '5px' }}>
               Socios Inscritos ({participantes.length} / {claseSeleccionada.cupo})
             </h4>
 
             {cargandoParticipantes ? (
-              <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem 0', color: 'rgba(255,255,255,0.4)' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', padding: '2rem 0', color: 'var(--text-faint)' }}>
                 <RefreshCw size={20} className={styles.spin} />
               </div>
             ) : participantes.length === 0 ? (
-              <div style={{ textAlign: 'center', padding: '2rem 0', color: 'rgba(255,255,255,0.3)' }}>
+              <div style={{ textAlign: 'center', padding: '2rem 0', color: 'var(--text-faint)' }}>
                 <Users size={32} style={{ marginBottom: '10px', opacity: 0.2 }} />
                 <p>No hay socios reservados en esta clase aún.</p>
               </div>
@@ -579,16 +579,16 @@ export default function ClasesPage() {
                 {participantes.map((part) => (
                   <div key={part.id_inscripcion} style={{ 
                     display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-                    padding: '0.6rem 0.8rem', background: 'rgba(255,255,255,0.02)', borderRadius: '8px',
-                    border: '1px solid rgba(255,255,255,0.04)'
+                    padding: '0.6rem 0.8rem', background: 'var(--subtle-bg)', borderRadius: '8px',
+                    border: '1px solid var(--surface-border)'
                   }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(0, 242, 255, 0.1)', color: 'var(--primary)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.75rem', fontWeight: 700 }}>
                         {part.socio?.usuario?.nombre?.substring(0, 2).toUpperCase() || 'S'}
                       </div>
                       <div>
-                        <p style={{ fontSize: '0.85rem', fontWeight: 600, color: '#fff', margin: 0 }}>{part.socio?.usuario?.nombre}</p>
-                        <span style={{ fontSize: '0.75rem', color: 'rgba(255,255,255,0.4)' }}>Cédula: {part.socio?.usuario?.identificacion}</span>
+                        <p style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-main)', margin: 0 }}>{part.socio?.usuario?.nombre}</p>
+                        <span style={{ fontSize: '0.75rem', color: 'var(--text-faint)' }}>Cédula: {part.socio?.usuario?.identificacion}</span>
                       </div>
                     </div>
                     {role === 'admin' && (
