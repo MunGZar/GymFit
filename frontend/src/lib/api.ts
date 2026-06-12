@@ -7,7 +7,7 @@
  *   Prefijo global       → /api   (app.setGlobalPrefix en main.ts)
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3002/api';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://gymfit-backend-ygbg.onrender.com/api';
 
 // Redefinimos fetch a nivel de módulo para evitar que Next.js o el navegador guarden caché agresivo
 const originalFetch = typeof window !== 'undefined' ? window.fetch : globalThis.fetch;
@@ -39,13 +39,13 @@ export interface LoginResponse {
   usuario: UsuarioInfo;
 }
 
-export interface LoginPayload    { correo: string; password: string; }
+export interface LoginPayload { correo: string; password: string; }
 export interface RegisterPayload {
   nombre: string; identificacion: string; correo: string;
   password: string; telefono?: string; id_rol: number;
 }
 export interface ActualizarPerfilPayload { nombre?: string; telefono?: string; }
-export interface CambiarPasswordPayload  { password_actual: string; password_nueva: string; }
+export interface CambiarPasswordPayload { password_actual: string; password_nueva: string; }
 export interface Rol { id_rol: number; nombre: string; }
 export interface UsuarioCompleto {
   id_usuario: number; nombre: string; identificacion: string;
