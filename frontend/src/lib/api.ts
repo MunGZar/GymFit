@@ -7,7 +7,7 @@
  *   Prefijo global       → /api   (app.setGlobalPrefix en main.ts)
  */
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://gymfit-backend-ygbg.onrender.com';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL ?? 'https://gymfit-backend-ygbg.onrender.com/api';
 
 // Redefinimos fetch a nivel de módulo para evitar que Next.js o el navegador guarden caché agresivo
 const originalFetch = typeof window !== 'undefined' ? window.fetch : globalThis.fetch;
