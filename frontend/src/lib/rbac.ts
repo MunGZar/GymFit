@@ -21,6 +21,7 @@ export const ROLE_ROUTES: Record<string, string[]> = {
     '/inventario',
     '/reportes',
     '/configuracion',
+    '/participantes',
     '/perfil',
   ],
   recepcionista: [

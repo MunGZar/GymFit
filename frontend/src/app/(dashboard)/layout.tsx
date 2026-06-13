@@ -10,22 +10,23 @@ import {
   LayoutDashboard, Users, CreditCard, Dumbbell, Calendar,
   Package, BarChart3, Settings, LogOut, Bell, Menu,
   UserPlus, ClipboardList, ShieldCheck, UserCircle,
-  Sun, Moon
+  Sun, Moon, UserCheck
 } from 'lucide-react';
 import { hasPermission } from '@/lib/rbac';
 
 const navItems = [
-  { path: '/dashboard',     label: 'Dashboard',      icon: LayoutDashboard },
-  { path: '/acceso',        label: 'Control Acceso', icon: ShieldCheck },
-  { path: '/socios',        label: 'Socios',         icon: Users },
-  { path: '/prospectos',    label: 'Prospectos',     icon: UserPlus },
-  { path: '/membresias',    label: 'Membresías',     icon: CreditCard },
-  { path: '/rutinas',       label: 'Rutinas',        icon: ClipboardList },
-  { path: '/personal',      label: 'Personal',       icon: Dumbbell },
-  { path: '/clases',        label: 'Clases',         icon: Calendar },
-  { path: '/inventario',    label: 'Inventario',     icon: Package },
-  { path: '/reportes',      label: 'Reportes',       icon: BarChart3 },
-  { path: '/configuracion', label: 'Configuración',  icon: Settings },
+  { path: '/dashboard',      label: 'Dashboard',        icon: LayoutDashboard },
+  { path: '/acceso',         label: 'Control Acceso',   icon: ShieldCheck },
+  { path: '/socios',         label: 'Socios',           icon: Users },
+  { path: '/prospectos',     label: 'Prospectos',       icon: UserPlus },
+  { path: '/participantes',  label: 'Participantes',    icon: UserCheck },
+  { path: '/membresias',     label: 'Membresías',       icon: CreditCard },
+  { path: '/rutinas',        label: 'Rutinas',          icon: ClipboardList },
+  { path: '/personal',       label: 'Personal',         icon: Dumbbell },
+  { path: '/clases',         label: 'Clases',           icon: Calendar },
+  { path: '/inventario',     label: 'Inventario',       icon: Package },
+  { path: '/reportes',       label: 'Reportes',         icon: BarChart3 },
+  { path: '/configuracion',  label: 'Configuración',    icon: Settings },
 ];
 
 function iniciales(nombre: string) {

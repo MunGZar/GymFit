@@ -89,6 +89,36 @@
   filter: brightness(1.1);
 }
 
+/* ── Botón Agregar Participante ── */
+.participantBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 13px;
+  border-radius: 12px;
+  border: 1px solid rgba(0, 242, 255, 0.25);
+  background: rgba(0, 242, 255, 0.06);
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.02em;
+}
+
+.participantBtn:hover {
+  background: rgba(0, 242, 255, 0.12);
+  border-color: rgba(0, 242, 255, 0.45);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(0, 242, 255, 0.12);
+}
+
+.participantBtn:active {
+  transform: translateY(0);
+}
+
 .footer {
   text-align: center;
   font-size: 0.9rem;
