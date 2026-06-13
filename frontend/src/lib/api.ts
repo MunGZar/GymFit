@@ -927,6 +927,63 @@ export const mantenimientoApi = {
   },
 };
 
+// ── Códigos de Participante API ──
+
+export interface CodigoParticipante {
+  id: number;
+  codigo: string;
+  usado: boolean;
+  fecha_creacion: string;
+  fecha_uso: string | null;
+  creado_por?: { nombre: string };
+}
+
+export interface GenerarCodigoResponse {
+  codigo: string;
+  mensaje: string;
+}
+
+export interface RegistroConCodigoPayload {
+  codigo: string;
+  nombre: string;
+  identificacion: string;
+  correo: string;
+  password: string;
+  telefono?: string;
+}
+
+export const codigosParticipanteApi = {
+  /** Admin: genera un nuevo código de uso único */
+  async generar(): Promise<GenerarCodigoResponse> {
+    const res = await fetch(`${BASE_URL}/auth/generar-codigo`, {
+      method: 'POST',
+      headers: buildHeaders(),
+    });
+    return handleResponse<GenerarCodigoResponse>(res);
+  },
+
+  /** Admin: lista todos los códigos generados */
+  async listar(): Promise<CodigoParticipante[]> {
+    const res = await fetch(`${BASE_URL}/auth/codigos-participante`, {
+      headers: buildHeaders(),
+    });
+    return handleResponse<CodigoParticipante[]>(res);
+  },
+
+  /** Público: registra un participante usando el código */
+  async registrarConCodigo(payload: RegistroConCodigoPayload): Promise<LoginResponse> {
+    const res = await fetch(`${BASE_URL}/auth/registro-participante`, {
+      method: 'POST',
+      headers: buildHeaders(false),
+      body: JSON.stringify(payload),
+    });
+    const data = await handleResponse<LoginResponse>(res, true);
+    localStorage.setItem('gymfit_token', data.access_token);
+    localStorage.setItem('gymfit_usuario', JSON.stringify(data.usuario));
+    return data;
+  },
+};
+
 // ── Reportes API (HU-21) ──
 export const reportesApi = {
   async getGeneral(): Promise<any> {
