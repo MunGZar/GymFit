@@ -108,7 +108,7 @@ export default function PersonalPage() {
   const handleGuardar = async (e: React.FormEvent) => {
     e.preventDefault(); setFormError('');
     if (!form.nombre.trim())         return setFormError('El nombre es obligatorio.');
-    if (!form.identificacion.trim()) return setFormError('La identificación es obligatoria.');
+    if (!form.identificacion.trim()) return setFormError('La identificación es obligatoria..');
     if (!form.correo.trim())         return setFormError('El correo es obligatorio.');
     if (modalMode==='crear' && form.password.length < 8) return setFormError('La contraseña debe tener mínimo 8 caracteres.');
     if (!form.id_rol)                return setFormError('Selecciona un rol.');
